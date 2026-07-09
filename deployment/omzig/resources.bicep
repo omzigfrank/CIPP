@@ -16,6 +16,7 @@ param mcpImage string = 'mcr.microsoft.com/k8se/quickstart:latest'
 
 var suffix = 'omzig-cipp-${environment}'
 var storageName = replace('stomzigcipp${environment}', '-', '')
+var functionContentShareName = 'func-${suffix}-content'
 
 // ---------------------------------------------------------------- monitoring
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
@@ -48,6 +49,21 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-05-01' = {
     allowBlobPublicAccess: false
     supportsHttpsTrafficOnly: true
     defaultToOAuthAuthentication: true
+  }
+}
+
+var storageConnectionString = 'DefaultEndpointsProtocol=https;EndpointSuffix=${az.environment().suffixes.storage};AccountName=${storage.name};AccountKey=${storage.listKeys().keys[0].value};BlobEndpoint=${storage.properties.primaryEndpoints.blob};FileEndpoint=${storage.properties.primaryEndpoints.file};QueueEndpoint=${storage.properties.primaryEndpoints.queue};TableEndpoint=${storage.properties.primaryEndpoints.table}'
+
+resource functionFileService 'Microsoft.Storage/storageAccounts/fileServices@2023-05-01' = {
+  parent: storage
+  name: 'default'
+}
+
+resource functionContentShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-05-01' = {
+  parent: functionFileService
+  name: functionContentShareName
+  properties: {
+    shareQuota: 5120
   }
 }
 
@@ -162,6 +178,12 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         { name: 'FUNCTIONS_WORKER_RUNTIME', value: 'powershell' }
         { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: appInsights.properties.ConnectionString }
         { name: 'AzureWebJobsStorage__accountName', value: storage.name }
+        { name: 'AzureWebJobsStorage__credential', value: 'managedidentity' }
+        { name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING', value: storageConnectionString }
+        { name: 'WEBSITE_CONTENTSHARE', value: functionContentShare.name }
+        { name: 'WEBSITE_RUN_FROM_PACKAGE', value: '1' }
+        { name: 'CIPP_STORAGE_CONNECTION_STRING', value: storageConnectionString }
+        { name: 'CIPPNG', value: 'true' }
         { name: 'KEYVAULT_NAME', value: keyVault.name }
         // §17 item 4: Datto RMM platform pinned to Vidal, env-overridable.
         { name: 'DATTO_RMM_PLATFORM', value: 'vidal' }
@@ -247,9 +269,17 @@ var kvSecretsUser = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
   '4633458b-17de-408a-b874-0445c86b69e6' // Key Vault Secrets User
 )
-var storageBlobContributor = subscriptionResourceId(
+var storageBlobDataOwner = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
-  'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Storage Blob Data Contributor
+  'b7e6dc6d-f1e8-4753-8033-0f276bb0955b' // Storage Blob Data Owner
+)
+var storageQueueDataContributor = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  '974c5e8b-45b9-4653-ba55-5f855dd0fb88' // Storage Queue Data Contributor
+)
+var storageTableDataContributor = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3' // Storage Table Data Contributor
 )
 
 resource funcKvRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
@@ -262,11 +292,31 @@ resource funcKvRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource funcStorageRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(storage.id, functionApp.id, storageBlobContributor)
+resource funcStorageBlobRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(storage.id, functionApp.id, storageBlobDataOwner)
   scope: storage
   properties: {
-    roleDefinitionId: storageBlobContributor
+    roleDefinitionId: storageBlobDataOwner
+    principalId: functionApp.identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource funcStorageQueueRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(storage.id, functionApp.id, storageQueueDataContributor)
+  scope: storage
+  properties: {
+    roleDefinitionId: storageQueueDataContributor
+    principalId: functionApp.identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource funcStorageTableRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(storage.id, functionApp.id, storageTableDataContributor)
+  scope: storage
+  properties: {
+    roleDefinitionId: storageTableDataContributor
     principalId: functionApp.identity.principalId
     principalType: 'ServicePrincipal'
   }

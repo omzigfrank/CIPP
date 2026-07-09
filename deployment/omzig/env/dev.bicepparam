@@ -3,7 +3,7 @@
 using '../main.bicep'
 
 param environment = 'dev'
-param location = 'eastus2'
+param location = 'centralus'
 param partnerTenantId = '<omzig-entra-tenant-id>' // supplied at deploy time
 param portalDomain = ''
 param clientPortalDomain = ''
