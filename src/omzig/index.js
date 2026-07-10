@@ -23,3 +23,4 @@ export {
   getAiProduct,
 } from './config/aiProducts'
 export { OMZIG_VERTICALS, getVertical } from './config/verticals'
+export { OMZIG_GDAP_BUNDLES } from './gdap-bundles/index.js'

@@ -1107,6 +1107,12 @@ export const nativeMenuItems = [
         permissions: ['CIPP.Core.*'],
       },
       {
+        title: 'GDAP Bundles',
+        path: '/omzig/gdap-bundles',
+        roles: ['editor', 'admin', 'superadmin'],
+        permissions: ['CIPP.Core.*'],
+      },
+      {
         title: 'Application Settings',
         path: '/cipp/settings',
         roles: ['admin', 'superadmin'],
