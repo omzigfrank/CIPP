@@ -1,0 +1,96 @@
+/*
+ * ŌMZIG brand tokens — extracted from omzig_logo_blue.png (dominant #3088C8).
+ * Spec: Omzig Custom CIPP Build v1.1 §5.2 / §8.3.
+ *
+ * Use rules (CI-enforced):
+ *  - Brand #3088C8 (blue-500): logo, large text (>=24px or >=18.66px bold),
+ *    backgrounds, borders, focus rings, filled buttons on dark backgrounds.
+ *  - AAA normal body text on white: blue-800 (#1A4A6E) or darker.
+ *  - AAA normal body text on ink:   blue-300 (#82B7DE) or lighter.
+ */
+
+:root {
+  /* Brand scale — extracted from the ŌMZIG logo (dominant #3088C8) */
+  --omzig-blue-50: #eef5fa; /* 19.08:1 on black — AAA */
+  --omzig-blue-100: #d5e7f4; /* 16.57:1 on black — AAA */
+  --omzig-blue-200: #accfe9; /* 12.86:1 on black — AAA */
+  --omzig-blue-300: #82b7de; /*  9.78:1 on black — AAA (AAA normal on dark) */
+  --omzig-blue-400: #599fd3; /*  7.32:1 on black — AAA */
+  --omzig-blue-500: #3088c8; /*  BRAND — 3.83:1 on white / 5.48:1 on black */
+  --omzig-blue-600: #2873aa; /*  5.09:1 on white — AA normal */
+  --omzig-blue-700: #215f8c; /*  6.82:1 on white — AA normal, AAA large */
+  --omzig-blue-800: #1a4a6e; /*  9.34:1 on white — AAA normal */
+  --omzig-blue-900: #133650; /* 12.57:1 on white — AAA normal */
+  --omzig-blue-950: #0c2232; /* 16.27:1 on white — AAA normal (headings, light theme) */
+
+  /* Neutrals + surfaces */
+  --omzig-ink: #0b0f1a; /* dark-theme background */
+  --omzig-surface: #111827; /* dark-theme card surface */
+  --omzig-paper: #ffffff; /* light-theme background */
+  --omzig-text-hi-dark: #f8fafc; /* 19.6:1 on --omzig-ink — AAA */
+  --omzig-text-hi-light: #0b0f1a; /* 18.3:1 on --omzig-paper — AAA */
+  --omzig-text-lo-dark: #94a3b8; /* 7.6:1 on --omzig-ink — AAA */
+  --omzig-text-lo-light: #334155; /* 10.5:1 on --omzig-paper — AAA */
+
+  /* Liquid glass tokens */
+  --omzig-glass-dark: rgba(48, 136, 200, 0.06); /* with backdrop-blur(20px) saturate(1.4) */
+  --omzig-glass-light: rgba(255, 255, 255, 0.55); /* with backdrop-blur(24px) saturate(1.6) */
+
+  /* Semantic */
+  --omzig-success: #14b8a6;
+  --omzig-warn: #f59e0b;
+  --omzig-danger: #dc2626;
+  --omzig-info: var(--omzig-blue-500);
+}
+
+/* Liquid-glass surfaces (§8.1). Components opt in with these classes. */
+.omzig-glass-dark {
+  background: var(--omzig-glass-dark);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+}
+
+.omzig-glass-light {
+  background: var(--omzig-glass-light);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+}
+
+/* Focus appearance — WCAG 2.4.13: 2px solid outline, 3:1 against adjacent colors. */
+.omzig-focus-ring :focus-visible,
+:root[data-omzig-brand] :focus-visible {
+  outline: 2px solid var(--omzig-blue-500);
+  outline-offset: 2px;
+}
+
+/* Accessibility fallbacks (§8.3 — non-negotiable) */
+@media (prefers-reduced-motion: reduce) {
+  .omzig-glass-dark,
+  .omzig-glass-light,
+  [data-omzig-motion] {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .omzig-glass-dark {
+    background: var(--omzig-surface);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .omzig-glass-light {
+    background: var(--omzig-paper);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --omzig-glass-dark: var(--omzig-surface);
+    --omzig-glass-light: var(--omzig-paper);
+    --omzig-text-lo-dark: var(--omzig-text-hi-dark);
+    --omzig-text-lo-light: var(--omzig-text-hi-light);
+  }
+}

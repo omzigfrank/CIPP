@@ -612,7 +612,7 @@ const AlertWizard = () => {
               <Card>
                 <CardActionArea onClick={() => setAlertType('script')}>
                   <CardContent>
-                    <Typography variant="h6">Scripted CIPP Alert</Typography>
+                    <Typography variant="h6">Scripted ŌMZIG Alert</Typography>
                     <Typography variant="body2">
                       Select this option to set up an alert based on data processed by CIPP.
                     </Typography>

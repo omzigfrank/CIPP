@@ -12,7 +12,7 @@ class CustomDocument extends Document {
           <meta name="theme-color" content="#ffffff" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-          <meta name="apple-mobile-web-app-title" content="CIPP" />
+          <meta name="apple-mobile-web-app-title" content="ŌMZIG" />
           <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
           <link
             rel="preconnect"

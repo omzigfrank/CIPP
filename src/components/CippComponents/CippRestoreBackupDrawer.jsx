@@ -305,7 +305,7 @@ export const CippRestoreBackupDrawer = ({
 
             {/* CIPP */}
             <Grid size={{ md: 6, xs: 12 }}>
-              <Typography variant="subtitle1">CIPP</Typography>
+              <Typography variant="subtitle1">ŌMZIG</Typography>
               <CippFormComponent
                 type="switch"
                 label="Webhook Alerts Configuration"

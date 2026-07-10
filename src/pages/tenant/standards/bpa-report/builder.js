@@ -281,7 +281,7 @@ const Page = () => {
                       </Grid>
                       <Grid size={{ xs: 12 }}>
                         <CippFormComponent
-                          label="Use information CIPP has previously gathered in another report"
+                          label="Use information ŌMZIG has previously gathered in another report"
                           name={`Fields.${index}.UseExistingInfo`} // Use correct index for the card
                           formControl={formControl}
                           type="switch"

@@ -13,6 +13,8 @@ import { createEmotionCache } from '../utils/create-emotion-cache'
 import '../libs/nprogress'
 import 'driver.js/dist/driver.css'
 import '../styles/tutorial-overrides.css'
+// ŌMZIG overlay: brand tokens + WCAG fallbacks (see src/omzig/README.md).
+import '../omzig/branding/tokens.css'
 import { PrivateRoute } from '../components/PrivateRoute'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useMediaPredicate } from 'react-media-hook'
@@ -260,7 +262,7 @@ const App = (props) => {
   return (
     <CacheProvider value={emotionCache}>
       <Head>
-        <title>CIPP</title>
+        <title>ŌMZIG Portal</title>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <ReduxProvider store={store}>
@@ -271,7 +273,7 @@ const App = (props) => {
                 {(settings) => {
                   // Create theme even while initializing to avoid blank screen
                   const theme = createTheme({
-                    colorPreset: 'orange',
+                    colorPreset: 'omzig',
                     direction: settings.direction || 'ltr',
                     paletteMode:
                       settings.currentTheme?.value !== 'browser'

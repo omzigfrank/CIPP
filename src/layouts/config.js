@@ -1114,7 +1114,7 @@ export const nativeMenuItems = [
     ],
   },
   {
-    title: 'CIPP',
+    title: 'ŌMZIG',
     type: 'header',
     icon: (
       <SvgIcon>
@@ -1125,6 +1125,30 @@ export const nativeMenuItems = [
       'CIPP.*', // Pattern matching - matches any CIPP permission
     ],
     items: [
+      {
+        title: 'Tenant View',
+        path: '/omzig/tenant-view',
+        roles: ['editor', 'admin', 'superadmin'],
+        permissions: ['CIPP.Core.*'],
+      },
+      {
+        title: 'Quote Engine',
+        path: '/omzig/quote',
+        roles: ['editor', 'admin', 'superadmin'],
+        permissions: ['CIPP.Core.*'],
+      },
+      {
+        title: 'GDAP Bundles',
+        path: '/omzig/gdap-bundles',
+        roles: ['editor', 'admin', 'superadmin'],
+        permissions: ['CIPP.Core.*'],
+      },
+      {
+        title: 'Update Center',
+        path: '/omzig/updates',
+        roles: ['admin', 'superadmin'],
+        permissions: ['CIPP.Core.*'],
+      },
       {
         title: 'Application Settings',
         path: '/cipp/settings',
