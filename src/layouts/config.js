@@ -1113,6 +1113,12 @@ export const nativeMenuItems = [
         permissions: ['CIPP.Core.*'],
       },
       {
+        title: 'Update Center',
+        path: '/omzig/updates',
+        roles: ['admin', 'superadmin'],
+        permissions: ['CIPP.Core.*'],
+      },
+      {
         title: 'Application Settings',
         path: '/cipp/settings',
         roles: ['admin', 'superadmin'],

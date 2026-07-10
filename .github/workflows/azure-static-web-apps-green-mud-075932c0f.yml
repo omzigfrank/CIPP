@@ -9,10 +9,13 @@ on:
   push:
     branches:
       - main
+  # ŌMZIG: dispatched by omzig-update-install.yml after it pushes an update
+  # (GITHUB_TOKEN pushes never retrigger push-based workflows on their own).
+  workflow_dispatch:
 
 jobs:
   build_and_deploy_job:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
