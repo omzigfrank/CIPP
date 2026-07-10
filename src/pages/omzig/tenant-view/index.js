@@ -30,7 +30,14 @@ import {
   getVertical,
   omzigScale,
   omzigSemantic,
+  OmzigPageHero,
 } from "../../../omzig";
+
+// Outlined chips sit on the dark hero panel in both themes — force light ink.
+const HERO_OUTLINED_CHIP_SX = {
+  color: "rgba(255, 255, 255, 0.85)",
+  borderColor: "rgba(255, 255, 255, 0.35)",
+};
 
 // AI Readiness statuses (§3 / §7.7): not-started, proposed, in-progress, delivered.
 const AI_STATUS_COLOR = {
@@ -136,40 +143,35 @@ const Page = () => {
       <Box sx={{ flexGrow: 1 }}>
         <Container maxWidth="lg">
           <Stack spacing={2}>
-            {/* Header */}
+            {/* Header — ŌMZIG overlay hero */}
             {tenantView.isLoading ? (
-              <Skeleton variant="rounded" height={64} />
+              <Skeleton variant="rounded" height={120} />
             ) : (
-              <Card>
-                <CardContent>
-                  <Stack
-                    direction={{ xs: "column", sm: "row" }}
-                    spacing={1.5}
-                    alignItems={{ xs: "flex-start", sm: "center" }}
-                    justifyContent="space-between"
-                  >
-                    <Typography variant="h5">
-                      {record?.displayName || record?.tenantId || currentTenant}
-                    </Typography>
-                    <Stack direction="row" spacing={1} flexWrap="wrap">
-                      <Chip
-                        label={tierInfo ? tierInfo.label : "No Tier"}
-                        color="primary"
-                        variant={tierInfo ? "filled" : "outlined"}
-                      />
-                      <Chip
-                        label={verticalInfo ? verticalInfo.label : "No Vertical"}
-                        variant="outlined"
-                      />
-                      <Chip
-                        label="BAA"
-                        color="success"
-                        variant={record?.baa ? "filled" : "outlined"}
-                      />
-                    </Stack>
+              <OmzigPageHero
+                title={record?.displayName || record?.tenantId || currentTenant}
+                subtitle="Single-pane ŌMZIG summary — health, AI readiness, PSA and RMM at a glance."
+                actions={
+                  <Stack direction="row" spacing={1} flexWrap="wrap">
+                    <Chip
+                      label={tierInfo ? tierInfo.label : "No Tier"}
+                      color="primary"
+                      variant={tierInfo ? "filled" : "outlined"}
+                      sx={!tierInfo ? HERO_OUTLINED_CHIP_SX : undefined}
+                    />
+                    <Chip
+                      label={verticalInfo ? verticalInfo.label : "No Vertical"}
+                      variant="outlined"
+                      sx={HERO_OUTLINED_CHIP_SX}
+                    />
+                    <Chip
+                      label="BAA"
+                      color="success"
+                      variant={record?.baa ? "filled" : "outlined"}
+                      sx={!record?.baa ? HERO_OUTLINED_CHIP_SX : undefined}
+                    />
                   </Stack>
-                </CardContent>
-              </Card>
+                }
+              />
             )}
 
             <Grid container spacing={2}>

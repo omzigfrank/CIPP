@@ -240,11 +240,25 @@ export const TopNav = (props) => {
     <Box
       component="header"
       sx={{
-        backgroundColor: 'neutral.900',
+        // ŌMZIG overlay: liquid-glass header with a brand gradient hairline.
+        backgroundColor: 'rgba(10, 16, 27, 0.82)',
+        backdropFilter: 'blur(20px) saturate(1.4)',
+        WebkitBackdropFilter: 'blur(20px) saturate(1.4)',
         color: 'common.white',
         position: 'fixed',
         width: '100%',
         zIndex: (theme) => theme.zIndex.appBar,
+        '&::after': {
+          content: '""',
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: '1px',
+          background:
+            'linear-gradient(90deg, transparent, rgba(89, 159, 211, 0.55) 18%, rgba(125, 227, 211, 0.45) 82%, transparent)',
+          pointerEvents: 'none',
+        },
       }}
     >
       <Stack

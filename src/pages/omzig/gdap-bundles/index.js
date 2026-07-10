@@ -4,6 +4,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Alert,
+  Avatar,
   Box,
   Button,
   Card,
@@ -12,21 +13,45 @@ import {
   Chip,
   Container,
   Divider,
+  LinearProgress,
   Skeleton,
   Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { Grid } from "@mui/system";
-import { ExpandMore } from "@mui/icons-material";
+import {
+  ExpandMore,
+  LocalHospitalOutlined,
+  GavelOutlined,
+  TrendingUpOutlined,
+  ApartmentOutlined,
+  HotelOutlined,
+  FamilyRestroomOutlined,
+  ShieldOutlined,
+} from "@mui/icons-material";
 import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { ApiGetCallWithPagination, ApiPostCall } from "../../../api/ApiCall";
 import { CippHead } from "../../../components/CippComponents/CippHead";
 import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
-import { OMZIG_GDAP_BUNDLES, getVertical } from "../../../omzig";
+import { OMZIG_GDAP_BUNDLES, getVertical, omzigScale, OmzigPageHero } from "../../../omzig";
 
 const apiUrl = "/api/ExecGDAPRoleTemplate";
 const queryKey = "ListGDAPRoleTemplates";
+
+// Per-vertical identity: icon + gradient so each bundle card reads at a glance.
+const VERTICAL_STYLES = {
+  healthcare: { icon: <LocalHospitalOutlined />, from: "#14B8A6", to: "#0E7490" },
+  legal: { icon: <GavelOutlined />, from: "#818CF8", to: "#4F46E5" },
+  wealth: { icon: <TrendingUpOutlined />, from: "#F59E0B", to: "#B45309" },
+  title: { icon: <ApartmentOutlined />, from: "#599FD3", to: "#215F8C" },
+  hospitality: { icon: <HotelOutlined />, from: "#FB7185", to: "#BE123C" },
+  "family-office": { icon: <FamilyRestroomOutlined />, from: "#A78BFA", to: "#6D28D9" },
+};
+
+const verticalStyle = (slug) =>
+  VERTICAL_STYLES[slug] || { icon: <ShieldOutlined />, from: omzigScale[400], to: omzigScale[700] };
 
 const Page = () => {
   const templatesQuery = ApiGetCallWithPagination({
@@ -61,6 +86,8 @@ const Page = () => {
   const notYetImported = statusKnown
     ? OMZIG_GDAP_BUNDLES.filter((bundle) => !importedTemplateIds.has(bundle.TemplateId))
     : [];
+  const importedCount = OMZIG_GDAP_BUNDLES.length - notYetImported.length;
+  const total = OMZIG_GDAP_BUNDLES.length;
 
   const buildPayload = (bundle) => ({
     TemplateId: bundle.TemplateId,
@@ -109,67 +136,73 @@ const Page = () => {
       <CippHead title="GDAP Vertical Bundles" noTenant />
       <Box sx={{ flexGrow: 1 }}>
         <Container maxWidth="lg">
-          <Stack spacing={2}>
-            <Card>
-              <CardHeader
-                title="ŌMZIG GDAP Vertical Bundle Importer"
-                subheader="Import the §6.1 / §17 item 10 vertical GDAP role bundles into the standard GDAP Role Templates library. Re-import is safe — Add merges missing roles by roleDefinitionId and never removes an existing role."
-              />
-              <CardContent>
-                <Stack spacing={2}>
-                  <Stack
-                    direction={{ xs: "column", sm: "row" }}
-                    spacing={1.5}
-                    alignItems={{ xs: "flex-start", sm: "center" }}
-                    justifyContent="space-between"
-                  >
-                    <Typography variant="body2" color="text.secondary">
-                      {statusKnown
-                        ? `${OMZIG_GDAP_BUNDLES.length - notYetImported.length} of ${
-                            OMZIG_GDAP_BUNDLES.length
-                          } bundles already imported`
-                        : "Import status unavailable until the template list loads"}
-                    </Typography>
-                    <Tooltip
-                      title={
-                        statusKnown && notYetImported.length === 0
-                          ? "Every bundle is already imported"
-                          : ""
-                      }
+          <Stack spacing={3}>
+            <OmzigPageHero
+              title="ŌMZIG GDAP Vertical Bundle Importer"
+              subtitle="Import the §6.1 / §17 item 10 vertical GDAP role bundles into the standard GDAP Role Templates library. Re-import is safe — Add merges missing roles by roleDefinitionId and never removes an existing role."
+              actions={
+                <Tooltip
+                  title={
+                    statusKnown && notYetImported.length === 0
+                      ? "Every bundle is already imported"
+                      : ""
+                  }
+                >
+                  <span>
+                    <Button
+                      variant="contained"
+                      size="large"
+                      onClick={handleImportAll}
+                      disabled={!statusKnown || notYetImported.length === 0 || isBusy}
                     >
-                      <span>
-                        <Button
-                          variant="contained"
-                          onClick={handleImportAll}
-                          disabled={!statusKnown || notYetImported.length === 0 || isBusy}
-                        >
-                          {importAllRunning
-                            ? "Importing all..."
-                            : `Import all (${notYetImported.length} remaining)`}
-                        </Button>
-                      </span>
-                    </Tooltip>
-                  </Stack>
-
-                  {templatesQuery.isError && (
-                    <Alert severity="error">
-                      Unable to load existing GDAP role templates. Import status below is unknown,
-                      but importing is still safe — Add merges by roleDefinitionId.
-                    </Alert>
-                  )}
-
-                  {importAllSummary && (
-                    <Alert severity={importAllSummary.failed.length > 0 ? "warning" : "success"}>
-                      Import all finished: {importAllSummary.succeeded.length} succeeded
-                      {importAllSummary.failed.length > 0
-                        ? `, ${importAllSummary.failed.length} failed (${importAllSummary.failed.join(", ")})`
-                        : ""}
-                      .
-                    </Alert>
+                      {importAllRunning
+                        ? "Importing all..."
+                        : `Import all (${notYetImported.length} remaining)`}
+                    </Button>
+                  </span>
+                </Tooltip>
+              }
+            >
+              <Stack spacing={1}>
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Typography variant="body2" sx={{ color: alpha("#FFFFFF", 0.75) }}>
+                    {statusKnown
+                      ? `${importedCount} of ${total} bundles already imported`
+                      : "Import status unavailable until the template list loads"}
+                  </Typography>
+                  {statusKnown && (
+                    <Typography
+                      variant="caption"
+                      sx={{ color: alpha("#FFFFFF", 0.6), fontVariantNumeric: "tabular-nums" }}
+                    >
+                      {Math.round((importedCount / total) * 100)}%
+                    </Typography>
                   )}
                 </Stack>
-              </CardContent>
-            </Card>
+                <LinearProgress
+                  variant="determinate"
+                  value={statusKnown ? (importedCount / total) * 100 : 0}
+                  sx={{ height: 8 }}
+                />
+              </Stack>
+            </OmzigPageHero>
+
+            {templatesQuery.isError && (
+              <Alert severity="error">
+                Unable to load existing GDAP role templates. Import status below is unknown, but
+                importing is still safe — Add merges by roleDefinitionId.
+              </Alert>
+            )}
+
+            {importAllSummary && (
+              <Alert severity={importAllSummary.failed.length > 0 ? "warning" : "success"}>
+                Import all finished: {importAllSummary.succeeded.length} succeeded
+                {importAllSummary.failed.length > 0
+                  ? `, ${importAllSummary.failed.length} failed (${importAllSummary.failed.join(", ")})`
+                  : ""}
+                .
+              </Alert>
+            )}
 
             {templatesQuery.isLoading ? (
               <Grid container spacing={2}>
@@ -180,16 +213,54 @@ const Page = () => {
                 ))}
               </Grid>
             ) : (
-              <Grid container spacing={2}>
-                {OMZIG_GDAP_BUNDLES.map((bundle) => {
+              <Grid container spacing={2.5}>
+                {OMZIG_GDAP_BUNDLES.map((bundle, index) => {
                   const vertical = getVertical(bundle.Vertical);
+                  const style = verticalStyle(bundle.Vertical);
                   const imported = importedTemplateIds.has(bundle.TemplateId);
                   const isThisBundleActive = activeTemplateId === bundle.TemplateId;
 
                   return (
                     <Grid key={bundle.TemplateId} size={{ xs: 12, md: 6 }}>
-                      <Card sx={{ height: "100%" }}>
+                      <Card
+                        data-omzig-motion
+                        sx={{
+                          height: "100%",
+                          position: "relative",
+                          overflow: "hidden",
+                          transition:
+                            "transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease",
+                          animation: `omzigFadeUp 420ms ease ${index * 60}ms both`,
+                          "&:hover": {
+                            transform: "translateY(-3px)",
+                            borderColor: alpha(style.from, 0.5),
+                            boxShadow: `0 18px 40px -18px ${alpha(style.from, 0.55)}`,
+                          },
+                          // Vertical identity ribbon along the top edge.
+                          "&::before": {
+                            content: '""',
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            height: 3,
+                            background: `linear-gradient(90deg, ${style.from}, ${style.to})`,
+                          },
+                        }}
+                      >
                         <CardHeader
+                          avatar={
+                            <Avatar
+                              variant="rounded"
+                              sx={{
+                                background: `linear-gradient(135deg, ${style.from}, ${style.to})`,
+                                color: "#FFFFFF",
+                                boxShadow: `0 6px 18px -6px ${alpha(style.from, 0.8)}`,
+                              }}
+                            >
+                              {style.icon}
+                            </Avatar>
+                          }
                           title={bundle.TemplateId}
                           subheader={vertical ? vertical.label : bundle.Vertical}
                           action={
@@ -213,7 +284,10 @@ const Page = () => {
                               <Typography variant="caption" color="text.secondary">
                                 Role mappings
                               </Typography>
-                              <Typography variant="caption">
+                              <Typography
+                                variant="caption"
+                                sx={{ fontVariantNumeric: "tabular-nums" }}
+                              >
                                 {bundle.RoleMappings.length}
                               </Typography>
                             </Stack>
@@ -267,9 +341,7 @@ const Page = () => {
                               </Typography>
                             </Box>
 
-                            {isThisBundleActive && (
-                              <CippApiResults apiObject={importTemplate} />
-                            )}
+                            {isThisBundleActive && <CippApiResults apiObject={importTemplate} />}
                           </Stack>
                         </CardContent>
                       </Card>
