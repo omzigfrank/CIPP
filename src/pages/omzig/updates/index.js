@@ -225,10 +225,23 @@ const Page = () => {
 
             {status.isSuccess && !githubReady && (
               <Alert severity="warning">
-                Update status is read-only right now: installing updates and enabling the schedule
-                need CIPP&apos;s GitHub integration (a PAT with repo + workflow scope for{" "}
-                {status.data?.Repos?.Frontend?.Fork} and {status.data?.Repos?.Api?.Fork}). Configure
-                it under Settings → Integrations → GitHub, then come back.
+                <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                  One-click installs need two things set up first:
+                </Typography>
+                <Typography variant="body2" component="div">
+                  1. The <code>omzig-update-install</code> workflow must exist on the default
+                  branch of {status.data?.Repos?.Frontend?.Fork} and{" "}
+                  {status.data?.Repos?.Api?.Fork} (it ships with the overlay PRs — merge them, or
+                  cherry-pick the workflow files).
+                  <br />
+                  2. A GitHub fine-grained PAT with <strong>Contents: Read/Write</strong>,{" "}
+                  <strong>Actions: Read/Write</strong>, <strong>Variables: Read/Write</strong> and{" "}
+                  <strong>Pull requests: Read/Write</strong> on both repositories, pasted into
+                  Settings → Integrations → GitHub.
+                  <br />
+                  Until then this page is read-only — you can still run the install workflow by
+                  hand from each repository&apos;s Actions tab once step 1 is done.
+                </Typography>
               </Alert>
             )}
 
@@ -385,6 +398,25 @@ const Page = () => {
                                   </Button>
                                 </span>
                               </Tooltip>
+
+                              <Typography variant="caption" color="text.secondary">
+                                Or run it by hand:{" "}
+                                <Link
+                                  href={`https://github.com/${status.data?.Repos?.Frontend?.Fork}/actions/workflows/omzig-update-install.yml`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  frontend workflow
+                                </Link>{" "}
+                                ·{" "}
+                                <Link
+                                  href={`https://github.com/${status.data?.Repos?.Api?.Fork}/actions/workflows/omzig-update-install.yml`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  API workflow
+                                </Link>
+                              </Typography>
 
                               {isActive && <CippApiResults apiObject={execUpdates} />}
                               {isActive && execUpdates.isSuccess && (
