@@ -28,6 +28,9 @@ param budgetAmount int = 400
 @description('Budget + ops notification recipients.')
 param alertEmails array = ['fdiaz@omzig.it']
 
+@description('Deploy Front Door Premium + WAF. Required for prod/stage; dev can ride the SWA default hostname to save ~$330/mo.')
+param deployFrontDoor bool = true
+
 var rgName = 'rg-omzig-cipp-${environment}'
 
 resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = {
@@ -49,6 +52,7 @@ module resources 'resources.bicep' = {
     partnerTenantId: partnerTenantId
     portalDomain: portalDomain
     clientPortalDomain: clientPortalDomain
+    deployFrontDoor: deployFrontDoor
   }
 }
 

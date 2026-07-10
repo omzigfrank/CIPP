@@ -14,6 +14,9 @@ param clientPortalDomain string
 @description('Container image for the omzig-mcp server (§16.5). Placeholder until the first image is pushed.')
 param mcpImage string = 'mcr.microsoft.com/k8se/quickstart:latest'
 
+@description('Front Door Premium + WAF costs ~$330/mo base — required for prod/stage (§11.3), skippable in dev where the SWA default hostname is enough.')
+param deployFrontDoor bool = true
+
 var suffix = 'omzig-cipp-${environment}'
 var storageName = replace('stomzigcipp${environment}', '-', '')
 var functionContentShareName = 'func-${suffix}-content'
@@ -153,6 +156,17 @@ resource cosmosColl 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containe
   }
 ]
 
+// CIPP's data-plane connection string lives in Key Vault; the Function App
+// receives only a Key Vault *reference* so the account key never sits in
+// plain-text site config. Versionless URI so key rotation propagates.
+resource kvStorageSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+  parent: keyVault
+  name: 'CippStorageConnectionString'
+  properties: {
+    value: storageConnectionString
+  }
+}
+
 // -------------------------------------------------------------- function app
 resource hostingPlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   name: 'plan-${suffix}'
@@ -182,7 +196,7 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         { name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING', value: storageConnectionString }
         { name: 'WEBSITE_CONTENTSHARE', value: functionContentShare.name }
         { name: 'WEBSITE_RUN_FROM_PACKAGE', value: '1' }
-        { name: 'CIPP_STORAGE_CONNECTION_STRING', value: storageConnectionString }
+        { name: 'CIPP_STORAGE_CONNECTION_STRING', value: '@Microsoft.KeyVault(SecretUri=${kvStorageSecret.properties.secretUri})' }
         { name: 'CIPPNG', value: 'true' }
         { name: 'KEYVAULT_NAME', value: keyVault.name }
         // §17 item 4: Datto RMM platform pinned to Vidal, env-overridable.
@@ -333,20 +347,20 @@ resource mcpKvRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 }
 
 // ------------------------------------------------------- front door (+ WAF)
-resource frontDoor 'Microsoft.Cdn/profiles@2024-02-01' = {
+resource frontDoor 'Microsoft.Cdn/profiles@2024-02-01' = if (deployFrontDoor) {
   name: 'afd-${suffix}'
   location: 'global'
   sku: { name: 'Premium_AzureFrontDoor' } // Premium required for managed WAF rules
 }
 
-resource fdEndpoint 'Microsoft.Cdn/profiles/afdEndpoints@2024-02-01' = {
+resource fdEndpoint 'Microsoft.Cdn/profiles/afdEndpoints@2024-02-01' = if (deployFrontDoor) {
   parent: frontDoor
   name: 'portal-${environment}'
   location: 'global'
   properties: { enabledState: 'Enabled' }
 }
 
-resource fdOriginGroup 'Microsoft.Cdn/profiles/originGroups@2024-02-01' = {
+resource fdOriginGroup 'Microsoft.Cdn/profiles/originGroups@2024-02-01' = if (deployFrontDoor) {
   parent: frontDoor
   name: 'og-swa'
   properties: {
@@ -360,7 +374,7 @@ resource fdOriginGroup 'Microsoft.Cdn/profiles/originGroups@2024-02-01' = {
   }
 }
 
-resource fdOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2024-02-01' = {
+resource fdOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2024-02-01' = if (deployFrontDoor) {
   parent: fdOriginGroup
   name: 'swa-origin'
   properties: {
@@ -372,7 +386,7 @@ resource fdOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2024-02-01' = {
   }
 }
 
-resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2024-02-01' = {
+resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2024-02-01' = if (deployFrontDoor) {
   name: replace('waf${suffix}', '-', '')
   location: 'global'
   sku: { name: 'Premium_AzureFrontDoor' }
@@ -410,7 +424,7 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
   }
 }
 
-resource fdCustomDomain 'Microsoft.Cdn/profiles/customDomains@2024-02-01' = if (!empty(portalDomain)) {
+resource fdCustomDomain 'Microsoft.Cdn/profiles/customDomains@2024-02-01' = if (deployFrontDoor && !empty(portalDomain)) {
   parent: frontDoor
   name: replace(portalDomain, '.', '-')
   properties: {
@@ -419,7 +433,7 @@ resource fdCustomDomain 'Microsoft.Cdn/profiles/customDomains@2024-02-01' = if (
   }
 }
 
-resource fdClientDomain 'Microsoft.Cdn/profiles/customDomains@2024-02-01' = if (!empty(clientPortalDomain)) {
+resource fdClientDomain 'Microsoft.Cdn/profiles/customDomains@2024-02-01' = if (deployFrontDoor && !empty(clientPortalDomain)) {
   parent: frontDoor
   name: replace(clientPortalDomain, '.', '-')
   properties: {
@@ -428,7 +442,7 @@ resource fdClientDomain 'Microsoft.Cdn/profiles/customDomains@2024-02-01' = if (
   }
 }
 
-resource fdRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2024-02-01' = {
+resource fdRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2024-02-01' = if (deployFrontDoor) {
   parent: fdEndpoint
   name: 'portal-route'
   properties: {
@@ -443,7 +457,7 @@ resource fdRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2024-02-01' = {
   dependsOn: [fdOrigin]
 }
 
-resource fdWafAssociation 'Microsoft.Cdn/profiles/securityPolicies@2024-02-01' = {
+resource fdWafAssociation 'Microsoft.Cdn/profiles/securityPolicies@2024-02-01' = if (deployFrontDoor) {
   parent: frontDoor
   name: 'waf-association'
   properties: {
@@ -464,4 +478,4 @@ output functionAppName string = functionApp.name
 output staticWebAppName string = swa.name
 output keyVaultName string = keyVault.name
 output mcpContainerAppName string = mcpApp.name
-output frontDoorEndpointHostname string = fdEndpoint.properties.hostName
+output frontDoorEndpointHostname string = deployFrontDoor ? fdEndpoint!.properties.hostName : ''
