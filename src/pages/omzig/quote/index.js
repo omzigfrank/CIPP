@@ -184,6 +184,7 @@ const Page = () => {
                         onClick={() => setProductId(f.Id)}
                         sx={{
                           width: "100%",
+                          height: "100%",
                           textAlign: "left",
                           display: "block",
                           borderRadius: 2,
@@ -353,6 +354,7 @@ const Page = () => {
                             startIcon={<BoltOutlined />}
                             onClick={handleEvaluate}
                             disabled={!canEvaluate || evaluateQuote.isPending}
+                            sx={{ width: { xs: "100%", sm: "auto" } }}
                           >
                             {evaluateQuote.isPending ? "Evaluating..." : "Evaluate quote"}
                           </Button>

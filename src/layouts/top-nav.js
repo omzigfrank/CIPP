@@ -267,13 +267,14 @@ export const TopNav = (props) => {
         alignItems="center"
         sx={{
           minHeight: TOP_NAV_HEIGHT,
-          px: 3,
+          // ŌMZIG overlay: tighter gutters on phones.
+          px: { xs: 1.5, sm: 3 },
         }}
       >
         <Stack
           alignItems="center"
           direction="row"
-          spacing={3}
+          spacing={{ xs: 1.5, sm: 3 }}
           divider={
             <Divider
               orientation="vertical"
@@ -288,9 +289,15 @@ export const TopNav = (props) => {
             component={NextLink}
             href={paths.index}
             sx={{
+              // ŌMZIG overlay: the wordmark is live text, so let it take its
+              // natural width instead of the upstream 24px icon box (which it
+              // overflowed, covering the mobile menu button) and strip the
+              // default anchor underline.
               display: 'inline-flex',
+              alignItems: 'center',
               height: 24,
-              width: 24,
+              width: 'auto',
+              textDecoration: 'none',
             }}
           >
             <Logo />

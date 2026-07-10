@@ -148,12 +148,13 @@ const Page = () => {
                       : ""
                   }
                 >
-                  <span>
+                  <span style={{ display: "block" }}>
                     <Button
                       variant="contained"
                       size="large"
                       onClick={handleImportAll}
                       disabled={!statusKnown || notYetImported.length === 0 || isBusy}
+                      sx={{ width: { xs: "100%", md: "auto" } }}
                     >
                       {importAllRunning
                         ? "Importing all..."

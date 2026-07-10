@@ -26,8 +26,8 @@ export const OmzigPageHero = (props) => {
           position: 'relative',
           overflow: 'hidden',
           borderRadius: 3,
-          px: { xs: 3, md: 4 },
-          py: { xs: 3, md: 4 },
+          px: { xs: 2.5, md: 4 },
+          py: { xs: 2.5, md: 4 },
           border: `1px solid ${alpha(omzigScale[400], dark ? 0.2 : 0.28)}`,
           backgroundColor: dark ? '#0B1322' : omzigScale[950],
           backgroundImage: [
@@ -121,7 +121,9 @@ export const OmzigPageHero = (props) => {
             </Typography>
           )}
         </Box>
-        {actions && <Box sx={{ flexShrink: 0 }}>{actions}</Box>}
+        {actions && (
+          <Box sx={{ flexShrink: 0, width: { xs: '100%', md: 'auto' } }}>{actions}</Box>
+        )}
       </Stack>
       {children && (
         <Box sx={{ position: 'relative', zIndex: 1, mt: 2.5 }}>{children}</Box>

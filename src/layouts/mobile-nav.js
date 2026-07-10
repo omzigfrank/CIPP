@@ -92,6 +92,18 @@ export const MobileNav = (props) => {
       PaperProps={{
         sx: {
           width: MOBILE_NAV_WIDTH,
+          maxWidth: 360,
+          // ŌMZIG overlay: liquid-glass drawer to match the desktop rail;
+          // tokens.css swaps it to a solid surface under
+          // prefers-reduced-transparency.
+          backgroundColor: (theme) =>
+            theme.palette.mode === "dark" ? "rgba(12, 18, 29, 0.9)" : "rgba(255, 255, 255, 0.92)",
+          backdropFilter: "blur(20px) saturate(1.4)",
+          WebkitBackdropFilter: "blur(20px) saturate(1.4)",
+          borderRight: (theme) =>
+            `1px solid ${
+              theme.palette.mode === "dark" ? "rgba(89, 159, 211, 0.18)" : "rgba(26, 74, 110, 0.12)"
+            }`,
         },
       }}
       variant="temporary"
@@ -114,9 +126,12 @@ export const MobileNav = (props) => {
             component={NextLink}
             href={paths.index}
             sx={{
+              // ŌMZIG overlay: live-text wordmark — natural width, no anchor underline.
               display: "inline-flex",
+              alignItems: "center",
               height: 24,
-              width: 24,
+              width: "auto",
+              textDecoration: "none",
             }}
           >
             <Logo />
