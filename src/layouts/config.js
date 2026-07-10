@@ -1095,6 +1095,12 @@ export const nativeMenuItems = [
     ],
     items: [
       {
+        title: 'Tenant View',
+        path: '/omzig/tenant-view',
+        roles: ['editor', 'admin', 'superadmin'],
+        permissions: ['CIPP.Core.*'],
+      },
+      {
         title: 'Application Settings',
         path: '/cipp/settings',
         roles: ['admin', 'superadmin'],
