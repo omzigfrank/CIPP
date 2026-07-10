@@ -369,7 +369,7 @@ const CippApiClientManagement = () => {
         </Box>
         <CippDataTable
           actions={actions}
-          title="CIPP-API Clients"
+          title="ŌMZIG API Clients"
           api={{
             url: "/api/ExecApiClient",
             data: { Action: "List" },

@@ -1083,7 +1083,7 @@ export const nativeMenuItems = [
     ],
   },
   {
-    title: 'CIPP',
+    title: 'ŌMZIG',
     type: 'header',
     icon: (
       <SvgIcon>

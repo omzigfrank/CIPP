@@ -28,7 +28,10 @@ export const Footer = () => {
             },
           },
         }}
-      ></Container>
+      >
+        <span style={{ fontSize: 12, opacity: 0.75 }}>ŌMZIG — We are best practice.</span>
+        <span style={{ fontSize: 12, opacity: 0.6, marginLeft: 'auto' }}>Built on CIPP by CyberDrain (AGPL-3.0)</span>
+      </Container>
     </div>
   );
 };
