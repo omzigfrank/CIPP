@@ -193,8 +193,19 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: appInsights.properties.ConnectionString }
         { name: 'AzureWebJobsStorage__accountName', value: storage.name }
         { name: 'AzureWebJobsStorage__credential', value: 'managedidentity' }
-        { name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING', value: storageConnectionString }
+        // Audit #5: never place the plain-text storage shared key in site config.
+        // On the prod Elastic Premium plan the content-share connection string is
+        // a Key Vault reference (same versionless secret as CIPP_STORAGE_...), and
+        // WEBSITE_SKIP_CONTENTSHARE_VALIDATION lets the platform accept it (it
+        // can't pre-validate the share behind a KV reference). Consumption (dev)
+        // cannot resolve a KV reference for this setting at cold start, so dev
+        // keeps the direct value — its vault/storage is non-production.
+        {
+          name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
+          value: environment == 'prod' ? '@Microsoft.KeyVault(SecretUri=${kvStorageSecret.properties.secretUri})' : storageConnectionString
+        }
         { name: 'WEBSITE_CONTENTSHARE', value: functionContentShare.name }
+        { name: 'WEBSITE_SKIP_CONTENTSHARE_VALIDATION', value: environment == 'prod' ? '1' : '0' }
         { name: 'WEBSITE_RUN_FROM_PACKAGE', value: '1' }
         { name: 'CIPP_STORAGE_CONNECTION_STRING', value: '@Microsoft.KeyVault(SecretUri=${kvStorageSecret.properties.secretUri})' }
         { name: 'CIPPNG', value: 'true' }
@@ -253,8 +264,14 @@ resource mcpApp 'Microsoft.App/containerApps@2024-03-01' = {
   properties: {
     managedEnvironmentId: containerEnv.id
     configuration: {
+      // Audit #6: the MCP server is NOT internet-facing. It carries no
+      // authentication and reaches the CIPP API, so external ingress would be
+      // an open, unauthenticated front door. Internal ingress keeps it
+      // reachable only from within the Container Apps environment. Enabling
+      // external access later REQUIRES adding authentication (Container Apps
+      // built-in auth / client cert) and fronting it with the WAF first.
       ingress: {
-        external: true
+        external: false
         targetPort: 8080
         transport: 'http'
       }
@@ -283,9 +300,11 @@ var kvSecretsUser = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
   '4633458b-17de-408a-b874-0445c86b69e6' // Key Vault Secrets User
 )
-var storageBlobDataOwner = subscriptionResourceId(
+// Audit #10: Contributor (not Owner) — CIPP needs blob read/write, not ADLS
+// ownership/ACL control. Matches the deployment README.
+var storageBlobDataContributor = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
-  'b7e6dc6d-f1e8-4753-8033-0f276bb0955b' // Storage Blob Data Owner
+  'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Storage Blob Data Contributor
 )
 var storageQueueDataContributor = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
@@ -307,10 +326,10 @@ resource funcKvRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 }
 
 resource funcStorageBlobRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(storage.id, functionApp.id, storageBlobDataOwner)
+  name: guid(storage.id, functionApp.id, storageBlobDataContributor)
   scope: storage
   properties: {
-    roleDefinitionId: storageBlobDataOwner
+    roleDefinitionId: storageBlobDataContributor
     principalId: functionApp.identity.principalId
     principalType: 'ServicePrincipal'
   }
@@ -336,15 +355,11 @@ resource funcStorageTableRole 'Microsoft.Authorization/roleAssignments@2022-04-0
   }
 }
 
-resource mcpKvRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(keyVault.id, mcpApp.id, kvSecretsUser)
-  scope: keyVault
-  properties: {
-    roleDefinitionId: kvSecretsUser
-    principalId: mcpApp.identity.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
+// Audit #6: the MCP server does not read Key Vault directly — it reaches
+// secrets only indirectly through the authenticated CIPP API (OMZIG_API_BASE).
+// The broad Key Vault Secrets User grant it previously held is removed to
+// shrink the blast radius. If a future MCP tool genuinely needs a specific
+// secret, add a role assignment scoped to that single secret, not the vault.
 
 // ------------------------------------------------------- front door (+ WAF)
 resource frontDoor 'Microsoft.Cdn/profiles@2024-02-01' = if (deployFrontDoor) {
