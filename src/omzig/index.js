@@ -30,3 +30,11 @@ export {
   omzigGlassSx,
 } from './branding/theme'
 export { OmzigPageHero } from './branding/OmzigPageHero'
+// Signature interaction layer.
+export { OmzigAuroraCanvas } from './branding/OmzigAuroraCanvas'
+export { AnimatedNumber } from './branding/AnimatedNumber'
+export { RadialGauge } from './branding/RadialGauge'
+export { ProgressRing } from './branding/ProgressRing'
+export { OmzigReveal } from './branding/OmzigReveal'
+export { TiltCard } from './branding/TiltCard'
+export { usePrefersReducedMotion, useCountUp, useInView } from './branding/motion'

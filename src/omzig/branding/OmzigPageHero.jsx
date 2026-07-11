@@ -13,6 +13,7 @@ import { Box, Stack, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 import { omzigScale } from './palette'
 import { OMZIG_WORDMARK, OMZIG_TAGLINE } from './palette'
+import { OmzigAuroraCanvas } from './OmzigAuroraCanvas'
 
 export const OmzigPageHero = (props) => {
   const { title, subtitle, actions = null, children = null } = props
@@ -74,6 +75,9 @@ export const OmzigPageHero = (props) => {
         }
       }}
     >
+      {/* Living WebGL aurora — parallaxes to the pointer, degrades to the CSS
+          backdrop above under reduced motion / no WebGL. */}
+      <OmzigAuroraCanvas />
       <Stack
         direction={{ xs: 'column', md: 'row' }}
         spacing={2}
@@ -104,13 +108,21 @@ export const OmzigPageHero = (props) => {
           <Typography
             variant="h4"
             component="h1"
+            data-omzig-motion
             sx={{
               mt: 0.5,
-              backgroundImage: `linear-gradient(100deg, #FFFFFF 0%, ${omzigScale[200]} 55%, #9AEDDD 100%)`,
+              // Animated gradient shimmer sweeping the display title.
+              backgroundImage: `linear-gradient(100deg, #FFFFFF 0%, ${omzigScale[200]} 40%, #9AEDDD 55%, ${omzigScale[200]} 70%, #FFFFFF 100%)`,
+              backgroundSize: '250% 100%',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               color: 'transparent',
               WebkitTextFillColor: 'transparent',
+              animation: 'omzigTitleSheen 9s ease-in-out infinite',
+              '@keyframes omzigTitleSheen': {
+                '0%, 100%': { backgroundPosition: '0% 50%' },
+                '50%': { backgroundPosition: '100% 50%' },
+              },
             }}
           >
             {title}

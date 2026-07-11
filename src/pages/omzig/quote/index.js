@@ -33,6 +33,8 @@ import {
   OmzigPageHero,
   omzigScale,
   omzigSemantic,
+  RadialGauge,
+  AnimatedNumber,
 } from "../../../omzig";
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
@@ -459,19 +461,31 @@ const Page = () => {
                               />
                             </Stack>
 
+                            <Stack alignItems="center" sx={{ py: 1 }}>
+                              <RadialGauge
+                                value={result.GrossMargin}
+                                label="Gross margin"
+                                sublabel="Floor 70%"
+                                accent={result.GrossMargin >= 0.7 ? omzigSemantic.success : omzigSemantic.warn}
+                              />
+                            </Stack>
+
                             <Grid container spacing={1.5}>
                               <Grid size={{ xs: 6 }}>
                                 <StatTile
-                                  label="Gross margin"
-                                  value={formatPercent(result.GrossMargin)}
-                                  accent={result.GrossMargin >= 0.7 ? omzigSemantic.success : omzigSemantic.warn}
+                                  label="Cost"
+                                  value={
+                                    <AnimatedNumber value={result.Cost} format={formatCurrency} />
+                                  }
                                 />
                               </Grid>
                               <Grid size={{ xs: 6 }}>
-                                <StatTile label="Cost" value={formatCurrency(result.Cost)} />
-                              </Grid>
-                              <Grid size={{ xs: 6 }}>
-                                <StatTile label="Floor" value={formatCurrency(result.Floor)} />
+                                <StatTile
+                                  label="Floor"
+                                  value={
+                                    <AnimatedNumber value={result.Floor} format={formatCurrency} />
+                                  }
+                                />
                               </Grid>
                               <Grid size={{ xs: 6 }}>
                                 <StatTile

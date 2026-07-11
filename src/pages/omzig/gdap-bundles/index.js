@@ -35,7 +35,15 @@ import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { ApiGetCallWithPagination, ApiPostCall } from "../../../api/ApiCall";
 import { CippHead } from "../../../components/CippComponents/CippHead";
 import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
-import { OMZIG_GDAP_BUNDLES, getVertical, omzigScale, OmzigPageHero } from "../../../omzig";
+import {
+  OMZIG_GDAP_BUNDLES,
+  getVertical,
+  omzigScale,
+  OmzigPageHero,
+  ProgressRing,
+  TiltCard,
+  OmzigReveal,
+} from "../../../omzig";
 
 const apiUrl = "/api/ExecGDAPRoleTemplate";
 const queryKey = "ListGDAPRoleTemplates";
@@ -164,27 +172,26 @@ const Page = () => {
                 </Tooltip>
               }
             >
-              <Stack spacing={1}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Typography variant="body2" sx={{ color: alpha("#FFFFFF", 0.75) }}>
+              <Stack direction="row" spacing={2.5} alignItems="center">
+                {statusKnown && (
+                  <ProgressRing
+                    value={total ? importedCount / total : 0}
+                    centerLabel={`${importedCount}/${total}`}
+                    size={92}
+                  />
+                )}
+                <Stack spacing={1} sx={{ flexGrow: 1, minWidth: 0 }}>
+                  <Typography variant="body2" sx={{ color: alpha("#FFFFFF", 0.78) }}>
                     {statusKnown
-                      ? `${importedCount} of ${total} bundles already imported`
+                      ? `${importedCount} of ${total} vertical bundles imported into the GDAP Role Templates library`
                       : "Import status unavailable until the template list loads"}
                   </Typography>
-                  {statusKnown && (
-                    <Typography
-                      variant="caption"
-                      sx={{ color: alpha("#FFFFFF", 0.6), fontVariantNumeric: "tabular-nums" }}
-                    >
-                      {Math.round((importedCount / total) * 100)}%
-                    </Typography>
-                  )}
+                  <LinearProgress
+                    variant="determinate"
+                    value={statusKnown ? (importedCount / total) * 100 : 0}
+                    sx={{ height: 8 }}
+                  />
                 </Stack>
-                <LinearProgress
-                  variant="determinate"
-                  value={statusKnown ? (importedCount / total) * 100 : 0}
-                  sx={{ height: 8 }}
-                />
               </Stack>
             </OmzigPageHero>
 
@@ -223,17 +230,15 @@ const Page = () => {
 
                   return (
                     <Grid key={bundle.TemplateId} size={{ xs: 12, md: 6 }}>
+                     <OmzigReveal delay={index * 70} sx={{ height: "100%" }}>
+                      <TiltCard>
                       <Card
-                        data-omzig-motion
                         sx={{
                           height: "100%",
                           position: "relative",
                           overflow: "hidden",
-                          transition:
-                            "transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease",
-                          animation: `omzigFadeUp 420ms ease ${index * 60}ms both`,
+                          transition: "box-shadow 180ms ease, border-color 180ms ease",
                           "&:hover": {
-                            transform: "translateY(-3px)",
                             borderColor: alpha(style.from, 0.5),
                             boxShadow: `0 18px 40px -18px ${alpha(style.from, 0.55)}`,
                           },
@@ -346,6 +351,8 @@ const Page = () => {
                           </Stack>
                         </CardContent>
                       </Card>
+                      </TiltCard>
+                     </OmzigReveal>
                     </Grid>
                   );
                 })}

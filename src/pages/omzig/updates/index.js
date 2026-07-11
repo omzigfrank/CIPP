@@ -36,7 +36,7 @@ import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { CippHead } from "../../../components/CippComponents/CippHead";
 import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
-import { OmzigPageHero, omzigScale } from "../../../omzig";
+import { OmzigPageHero, omzigScale, TiltCard, OmzigReveal } from "../../../omzig";
 
 const execUrl = "/api/ExecOmzigUpdates";
 const statusQueryKey = "OmzigUpdateStatus";
@@ -421,13 +421,13 @@ const Page = () => {
 
                     return (
                       <Grid key={channel.key} size={{ xs: 12, md: 4 }}>
+                       <OmzigReveal delay={index * 80} sx={{ height: "100%" }}>
+                        <TiltCard max={5}>
                         <Card
-                          data-omzig-motion
                           sx={{
                             height: "100%",
                             position: "relative",
                             overflow: "hidden",
-                            animation: `omzigFadeUp 420ms ease ${index * 60}ms both`,
                             "&::before": {
                               content: '""',
                               position: "absolute",
@@ -596,6 +596,8 @@ const Page = () => {
                             </Stack>
                           </CardContent>
                         </Card>
+                        </TiltCard>
+                       </OmzigReveal>
                       </Grid>
                     );
                   })}
