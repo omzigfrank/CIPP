@@ -155,6 +155,10 @@ const Page = () => {
   const stableTag = channels?.Frontend?.Stable?.Version;
   const stableUpdateAvailable = isNewerVersion(stableTag, portalVersion);
 
+  // ŌMZIG audit #1: only stable may install directly; beta/canary always
+  // open a review PR (the server/workflow enforce this regardless of the UI).
+  const effectivePrMode = (channelKey) => installAsPr || channelKey !== "stable";
+
   const handleInstall = (channelKey) => {
     setActiveAction(`install-${channelKey}`);
     execUpdates.mutate({
@@ -162,7 +166,7 @@ const Page = () => {
       data: {
         Action: "InstallNow",
         channel: channelKey,
-        mode: installAsPr ? "pr" : "install",
+        mode: effectivePrMode(channelKey) ? "pr" : "install",
       },
     });
   };
@@ -510,12 +514,18 @@ const Page = () => {
                                   >
                                     {isActive && execUpdates.isPending
                                       ? "Dispatching..."
-                                      : installAsPr
+                                      : effectivePrMode(channel.key)
                                         ? `Open ${channel.title} update PR`
                                         : `Install ${channel.title} now`}
                                   </Button>
                                 </span>
                               </Tooltip>
+                              {channel.key !== "stable" && (
+                                <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                                  Beta and canary always open a review PR — they&apos;re never
+                                  installed straight to production.
+                                </Typography>
+                              )}
 
                               <Typography variant="caption" color="text.secondary">
                                 Or run it by hand:{" "}
