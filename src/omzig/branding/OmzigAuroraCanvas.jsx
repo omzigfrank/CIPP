@@ -50,15 +50,17 @@ void main(){
   float n2 = fbm(q*3.6 - vec2(t*0.8, t*0.5) + n1);
   float curtain = smoothstep(0.15, 1.0, n1*0.7 + n2*0.5);
 
-  vec3 blue = vec3(0.188, 0.533, 0.784);   // brand blue-500
+  vec3 blue = vec3(0.235, 0.62, 0.90);     // brightened brand blue
   vec3 deep = vec3(0.075, 0.129, 0.235);   // ink
-  vec3 teal = vec3(0.086, 0.72, 0.66);     // #16B8A6
+  vec3 teal = vec3(0.11, 0.86, 0.78);      // brightened teal
   vec3 col = mix(deep, blue, curtain);
-  col = mix(col, teal, smoothstep(0.55, 1.0, n2) * 0.5 * curtain);
+  col = mix(col, teal, smoothstep(0.45, 1.0, n2) * 0.75 * curtain);
+  // Bright filaments along the curtain crests for visible "ribbons".
+  col += teal * pow(smoothstep(0.7, 1.0, n1), 2.0) * 0.35;
 
   // Vignette so edges melt into the hero panel.
-  float vig = smoothstep(1.15, 0.2, length((uv-0.5)*asp));
-  float alpha = curtain * vig * 0.9;
+  float vig = smoothstep(1.2, 0.15, length((uv-0.5)*asp));
+  float alpha = clamp(curtain * vig * 1.35, 0.0, 1.0);
   gl_FragColor = vec4(col, alpha);
 }
 `
@@ -188,7 +190,7 @@ export const OmzigAuroraCanvas = () => {
         width: '100%',
         height: '100%',
         pointerEvents: 'none',
-        opacity: 0.9,
+        opacity: 1,
         mixBlendMode: 'screen',
       }}
     />

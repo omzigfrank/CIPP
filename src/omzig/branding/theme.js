@@ -42,6 +42,13 @@ const keyframes = {
     '0%, 100%': { boxShadow: `0 0 0 0 ${alpha(omzigScale[500], 0.35)}` },
     '50%': { boxShadow: `0 0 24px 4px ${alpha(omzigScale[500], 0.18)}` },
   },
+  // Slow drift for the whole-app ambient aurora — makes every page "breathe".
+  '@keyframes omzigAmbientDrift': {
+    '0%': { transform: 'translate3d(0%, 0%, 0) scale(1)', opacity: 0.9 },
+    '33%': { transform: 'translate3d(-3%, 2%, 0) scale(1.12)', opacity: 1 },
+    '66%': { transform: 'translate3d(4%, -2%, 0) scale(1.06)', opacity: 0.85 },
+    '100%': { transform: 'translate3d(0%, 0%, 0) scale(1)', opacity: 0.9 },
+  },
 }
 
 // Aurora mesh painted on the page body, behind every surface. Dark mode gets
@@ -96,6 +103,38 @@ export const createOmzigOverlayOptions = ({ paletteMode }) => {
           },
           body: {
             ...auroraBackground(dark),
+            position: 'relative',
+            // Whole-app ambient aurora — a fixed, drifting glow layer behind
+            // all content so every page is visibly alive on load, not just the
+            // ŌMZIG heroes. Disabled by the reduced-motion/transparency rules
+            // below. pointer-events:none keeps it purely decorative.
+            '&::before': {
+              content: '""',
+              position: 'fixed',
+              inset: '-20%',
+              zIndex: 0,
+              pointerEvents: 'none',
+              backgroundRepeat: 'no-repeat',
+              backgroundImage: dark
+                ? [
+                    `radial-gradient(760px 520px at 16% 12%, ${alpha(omzigScale[500], 0.4)}, transparent 60%)`,
+                    `radial-gradient(720px 520px at 84% 20%, ${alpha('#16B8A6', 0.3)}, transparent 60%)`,
+                    `radial-gradient(900px 620px at 50% 108%, ${alpha(omzigScale[600], 0.42)}, transparent 62%)`,
+                  ].join(', ')
+                : [
+                    `radial-gradient(760px 520px at 16% 12%, ${alpha(omzigScale[400], 0.3)}, transparent 60%)`,
+                    `radial-gradient(720px 520px at 84% 20%, ${alpha('#16B8A6', 0.2)}, transparent 60%)`,
+                    `radial-gradient(900px 620px at 50% 108%, ${alpha(omzigScale[300], 0.34)}, transparent 62%)`,
+                  ].join(', '),
+              filter: 'blur(24px)',
+              animation: 'omzigAmbientDrift 26s ease-in-out infinite',
+              willChange: 'transform, opacity',
+            },
+          },
+          // Keep app content above the ambient layer.
+          '#__next, #root, [data-omzig-app]': {
+            position: 'relative',
+            zIndex: 1,
           },
           '::selection': {
             backgroundColor: alpha(omzigScale[500], dark ? 0.45 : 0.25),
