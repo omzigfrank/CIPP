@@ -50,6 +50,24 @@ const formatDate = (value) => {
   return date && !Number.isNaN(date.getTime()) ? dateFormatter.format(date) : "—";
 };
 
+// Audit #3: only render a link when the API-supplied URL is an https github.com
+// URL. React does not sanitize javascript: hrefs, so a tampered/reflected Url
+// field could otherwise become a script or open-redirect sink. Returns the URL
+// when safe, else null (caller renders plain text instead of a link).
+const safeGithubUrl = (value) => {
+  if (!value) return null;
+  try {
+    const u = new URL(value);
+    const host = u.hostname.toLowerCase();
+    if (u.protocol === "https:" && (host === "github.com" || host.endsWith(".github.com"))) {
+      return u.href;
+    }
+  } catch {
+    /* not a parseable absolute URL */
+  }
+  return null;
+};
+
 // Compare dotted versions ignoring a leading v; null when not comparable.
 const isNewerVersion = (remote, local) => {
   if (!remote || !local) return null;
@@ -463,10 +481,10 @@ const Page = () => {
                                     <Typography variant="caption" color="text.secondary">
                                       {label}
                                     </Typography>
-                                    {info ? (
+                                    {info && safeGithubUrl(info.url) ? (
                                       <Tooltip title={`Published ${formatDate(info.date)}`}>
                                         <Link
-                                          href={info.url}
+                                          href={safeGithubUrl(info.url)}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           variant="body2"
@@ -475,6 +493,13 @@ const Page = () => {
                                           {info.label}
                                         </Link>
                                       </Tooltip>
+                                    ) : info ? (
+                                      <Typography
+                                        variant="body2"
+                                        sx={{ fontVariantNumeric: "tabular-nums" }}
+                                      >
+                                        {info.label}
+                                      </Typography>
                                     ) : (
                                       <Typography variant="body2" color="text.secondary">
                                         {channel.key === "prerelease"

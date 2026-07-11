@@ -337,6 +337,9 @@ const Page = () => {
                               size="small"
                               type="password"
                               label="Executive override token"
+                              // Audit #4: don't let the browser offer to save/autofill the token.
+                              autoComplete="off"
+                              slotProps={{ htmlInput: { autoComplete: "off", spellCheck: false } }}
                               helperText="Frank-signed override for a below-floor quote. AIRA can never be discounted, even with a valid token."
                               value={overrideToken}
                               onChange={(e) => setOverrideToken(e.target.value)}

@@ -61,3 +61,28 @@ deployment outputs, then Front Door issues the Azure-managed certificate.
 - ARM-template export for Sponsor-Instance parity (§11.3).
 - Immutability policy **lock** in prod (locking is irreversible, so it is a
   deliberate manual step Frank performs after validation).
+
+## Security hardening — prod cutover checklist
+
+Applied in IaC (audit remediation):
+- **#5 Storage key** — the Function App content-share connection string is a
+  Key Vault reference in prod (`WEBSITE_SKIP_CONTENTSHARE_VALIDATION=1`); the
+  plain-text shared key no longer sits in prod site config.
+- **#6 MCP ingress** — the MCP Container App is internal-only (`external:false`)
+  and no longer holds a broad Key Vault Secrets User grant.
+- **#10 Storage RBAC** — Function App uses Storage Blob Data *Contributor*, not
+  Owner.
+
+Deferred to cutover (cannot be applied in the shared static config without
+breaking the direct-access dev stack, and needs the deployed Front Door id):
+- **#7 Front Door bypass** — before going live, lock the prod SWA to Front Door
+  traffic so the WAF cannot be bypassed. In `staticwebapp.config.json` for the
+  prod deployment add either `"networking": { "allowedIpRanges": ["AzureFrontDoor.Backend"] }`
+  or a `forwardingGateway.requiredHeaders["X-Azure-FDID"]` check set to the prod
+  AFD profile's `frontDoorId`. Do NOT apply this to the shared config while the
+  dev stack is reached directly (it would 403 the dev site).
+- **#8 storage network ACLs / shared-key** — once CIPP data access is fully
+  identity-based, set `allowSharedKeyAccess:false` + `networkAcls deny` and drop
+  `CippStorageConnectionString` from Key Vault.
+- **#12 Key Vault / Storage / Front Door diagnostic settings** to Log Analytics
+  (AuditEvent, StorageRead/Write/Delete, WAF logs) for the BAA audit posture.
