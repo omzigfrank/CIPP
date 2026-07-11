@@ -16,6 +16,7 @@ import {
   Skeleton,
   Stack,
   Switch,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -28,6 +29,8 @@ import {
   ScheduleOutlined,
   SystemUpdateAltOutlined,
   RefreshOutlined,
+  LockPersonOutlined,
+  GroupsOutlined,
 } from "@mui/icons-material";
 import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
@@ -116,12 +119,19 @@ const Page = () => {
   const [scheduleMode, setScheduleMode] = useState("install");
   // On-demand installs: install directly or open a review PR.
   const [installAsPr, setInstallAsPr] = useState(false);
+  // Superadmin-only: the Entra security group whose members may trigger updates.
+  const [groupId, setGroupId] = useState("");
+  const [groupName, setGroupName] = useState("");
 
   useEffect(() => {
     if (status.isSuccess && status.data?.Settings) {
       setAutoUpdate(Boolean(status.data.Settings.AutoUpdate));
       setScheduleChannel(status.data.Settings.Channel || "stable");
       setScheduleMode(status.data.Settings.Mode || "install");
+    }
+    if (status.isSuccess && status.data?.Access) {
+      setGroupId(status.data.Access.UpdaterGroupId || "");
+      setGroupName(status.data.Access.UpdaterGroupName || "");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status.isSuccess]);
@@ -130,6 +140,17 @@ const Page = () => {
   const channels = status.data?.Channels;
   const portalVersion = localVersion.data?.version;
   const apiVersion = status.data?.LocalApiVersion;
+
+  // Access control: only members of the configured Entra group may trigger
+  // updates; a superadmin designates that group. The server re-checks both —
+  // this only drives the UI (disable controls, show guidance).
+  const access = status.data?.Access || {};
+  const isUpdater = Boolean(access.CallerIsUpdater);
+  const isSuperAdmin = Boolean(access.CallerIsSuperAdmin);
+  const groupConfigured = Boolean(access.GroupConfigured);
+  // Write controls are enabled only when the integration is ready AND the
+  // caller is an authorized updater.
+  const canWrite = githubReady && isUpdater;
 
   const stableTag = channels?.Frontend?.Stable?.Version;
   const stableUpdateAvailable = isNewerVersion(stableTag, portalVersion);
@@ -155,6 +176,18 @@ const Page = () => {
         autoUpdate,
         channel: scheduleChannel,
         mode: scheduleMode,
+      },
+    });
+  };
+
+  const handleSaveGroup = () => {
+    setActiveAction("group");
+    execUpdates.mutate({
+      url: execUrl,
+      data: {
+        Action: "SetUpdaterGroup",
+        groupId: groupId.trim(),
+        groupName: groupName.trim(),
       },
     });
   };
@@ -243,6 +276,89 @@ const Page = () => {
                   hand from each repository&apos;s Actions tab once step 1 is done.
                 </Typography>
               </Alert>
+            )}
+
+            {/* Access control banner — who may trigger updates */}
+            {status.isSuccess && (
+              <Alert severity={isUpdater ? "success" : "info"} icon={<LockPersonOutlined />}>
+                {!groupConfigured ? (
+                  isSuperAdmin ? (
+                    "Updates are locked down — no updater group is set yet. Choose the Entra security group whose members may trigger updates below."
+                  ) : (
+                    "Updates are locked down until a superadmin designates an updater group."
+                  )
+                ) : isUpdater ? (
+                  <>
+                    You&apos;re a member of the updater group
+                    {access.UpdaterGroupName ? ` "${access.UpdaterGroupName}"` : ""} — you can
+                    install updates and change the schedule.
+                  </>
+                ) : (
+                  <>
+                    Updates are restricted to members of the Entra group
+                    {access.UpdaterGroupName ? ` "${access.UpdaterGroupName}"` : ""}. You can view
+                    status here, but only group members can install or change the schedule.
+                  </>
+                )}
+              </Alert>
+            )}
+
+            {/* Superadmin-only: designate the updater group */}
+            {status.isSuccess && isSuperAdmin && (
+              <Card>
+                <CardHeader
+                  avatar={
+                    <Avatar variant="rounded" sx={{ background: `linear-gradient(135deg, ${omzigScale[400]}, ${omzigScale[700]})`, color: "#FFFFFF" }}>
+                      <GroupsOutlined />
+                    </Avatar>
+                  }
+                  title="Who can trigger updates"
+                  subheader="Only members of this Entra security group may install updates or change the schedule. As a superadmin you can change the group at any time (you don't need to be a member to change it)."
+                />
+                <CardContent>
+                  <Grid container spacing={2} alignItems="flex-start">
+                    <Grid size={{ xs: 12, sm: 7 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        Entra group object ID (GUID)
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        placeholder="00000000-0000-0000-0000-000000000000"
+                        value={groupId}
+                        onChange={(e) => setGroupId(e.target.value)}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 5 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        Friendly name (optional)
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        placeholder="ŌMZIG Updaters"
+                        value={groupName}
+                        onChange={(e) => setGroupName(e.target.value)}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12 }}>
+                      <Button
+                        variant="contained"
+                        onClick={handleSaveGroup}
+                        disabled={execUpdates.isPending}
+                        sx={{ width: { xs: "100%", sm: "auto" } }}
+                      >
+                        {activeAction === "group" && execUpdates.isPending ? "Saving..." : "Save updater group"}
+                      </Button>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                        Find the object ID in Entra → Groups → your group → Overview. Leave blank and
+                        save to lock updates down entirely.
+                      </Typography>
+                    </Grid>
+                    {activeAction === "group" && <Grid size={{ xs: 12 }}><CippApiResults apiObject={execUpdates} /></Grid>}
+                  </Grid>
+                </CardContent>
+              </Card>
             )}
 
             {status.isLoading ? (
@@ -377,9 +493,11 @@ const Page = () => {
 
                               <Tooltip
                                 title={
-                                  githubReady
+                                  canWrite
                                     ? ""
-                                    : "Configure the GitHub integration to enable installs"
+                                    : !githubReady
+                                      ? "Configure the GitHub integration to enable installs"
+                                      : "Only members of the updater group can install updates"
                                 }
                               >
                                 <span style={{ display: "block" }}>
@@ -388,7 +506,7 @@ const Page = () => {
                                     variant={channel.key === "stable" ? "contained" : "outlined"}
                                     startIcon={<SystemUpdateAltOutlined />}
                                     onClick={() => handleInstall(channel.key)}
-                                    disabled={!githubReady || execUpdates.isPending}
+                                    disabled={!canWrite || execUpdates.isPending}
                                   >
                                     {isActive && execUpdates.isPending
                                       ? "Dispatching..."
@@ -512,16 +630,18 @@ const Page = () => {
                       <Box>
                         <Tooltip
                           title={
-                            githubReady
+                            canWrite
                               ? ""
-                              : "Configure the GitHub integration to make the schedule live"
+                              : !githubReady
+                                ? "Configure the GitHub integration to make the schedule live"
+                                : "Only members of the updater group can change the schedule"
                           }
                         >
                           <span style={{ display: "inline-block" }}>
                             <Button
                               variant="contained"
                               onClick={handleSaveSchedule}
-                              disabled={!githubReady || execUpdates.isPending}
+                              disabled={!canWrite || execUpdates.isPending}
                               sx={{ width: { xs: "100%", sm: "auto" } }}
                             >
                               {activeAction === "schedule" && execUpdates.isPending
