@@ -31,6 +31,7 @@ import {
   omzigScale,
   omzigSemantic,
   OmzigPageHero,
+  RadialGauge,
 } from "../../../omzig";
 
 // Outlined chips sit on the dark hero panel in both themes — force light ink.
@@ -62,12 +63,6 @@ const formatStatus = (status) =>
         .join(" ")
     : "Unknown";
 
-const getHealthColor = (score) => {
-  if (score === null || score === undefined) return "text.secondary";
-  if (score >= 80) return omzigSemantic.success;
-  if (score >= 60) return omzigSemantic.warn;
-  return omzigSemantic.danger;
-};
 
 const Page = () => {
   const currentTenant = useSettings().currentTenant;
@@ -187,16 +182,26 @@ const Page = () => {
                         No telemetry yet
                       </Typography>
                     ) : (
-                      <Stack spacing={1.5}>
-                        <Typography
-                          variant="h2"
-                          sx={{ color: getHealthColor(healthScore.Score), fontWeight: 700 }}
-                        >
-                          {healthScore.Score}
-                        </Typography>
+                      <Stack
+                        direction={{ xs: "column", sm: "row" }}
+                        spacing={2.5}
+                        alignItems="center"
+                      >
+                        <RadialGauge
+                          value={Math.max(0, Math.min(1, Number(healthScore.Score) / 100))}
+                          size={128}
+                          accent={
+                            healthScore.Score >= 80
+                              ? omzigSemantic.success
+                              : healthScore.Score >= 60
+                                ? omzigSemantic.warn
+                                : omzigSemantic.danger
+                          }
+                          label="Health"
+                        />
                         {Array.isArray(healthScore.Components) &&
                           healthScore.Components.length > 0 && (
-                            <Stack spacing={0.5}>
+                            <Stack spacing={0.5} sx={{ flexGrow: 1, minWidth: 0, width: "100%" }}>
                               {healthScore.Components.map((component) => (
                                 <Stack
                                   key={component.Name}
