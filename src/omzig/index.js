@@ -32,6 +32,7 @@ export {
 export { OmzigPageHero } from './branding/OmzigPageHero'
 // Signature interaction layer.
 export { OmzigAuroraCanvas } from './branding/OmzigAuroraCanvas'
+export { OmzigInteractionLayer } from './branding/OmzigInteractionLayer'
 export { AnimatedNumber } from './branding/AnimatedNumber'
 export { RadialGauge } from './branding/RadialGauge'
 export { ProgressRing } from './branding/ProgressRing'

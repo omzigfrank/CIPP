@@ -16,6 +16,9 @@ import '../styles/tutorial-overrides.css'
 // ŌMZIG overlay: brand tokens + WCAG fallbacks (see src/omzig/README.md).
 import '../omzig/branding/tokens.css'
 import { PrivateRoute } from '../components/PrivateRoute'
+// ŌMZIG global reactive interaction layer (cursor spotlight, pointer-reactive
+// aurora, magnetic CTAs). Renders nothing; inert on touch / reduced-motion.
+import { OmzigInteractionLayer } from '../omzig/branding/OmzigInteractionLayer'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useMediaPredicate } from 'react-media-hook'
 import Error500 from './500'
@@ -287,6 +290,7 @@ const App = (props) => {
                       <ThemeProvider theme={theme}>
                         <RTL direction={settings.direction}>
                           <CssBaseline />
+                          <OmzigInteractionLayer />
                           <ErrorBoundary FallbackComponent={Error500}>
                             <PrivateRoute>
                               <TutorialProvider>

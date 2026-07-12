@@ -43,11 +43,13 @@ const keyframes = {
     '50%': { boxShadow: `0 0 24px 4px ${alpha(omzigScale[500], 0.18)}` },
   },
   // Slow drift for the whole-app ambient aurora — makes every page "breathe".
+  // Uses the individual `translate`/`scale` properties (not `transform`) so the
+  // pointer-reactive `transform` on body::before composes on top of the drift.
   '@keyframes omzigAmbientDrift': {
-    '0%': { transform: 'translate3d(0%, 0%, 0) scale(1)', opacity: 0.9 },
-    '33%': { transform: 'translate3d(-3%, 2%, 0) scale(1.12)', opacity: 1 },
-    '66%': { transform: 'translate3d(4%, -2%, 0) scale(1.06)', opacity: 0.85 },
-    '100%': { transform: 'translate3d(0%, 0%, 0) scale(1)', opacity: 0.9 },
+    '0%': { translate: '0% 0%', scale: '1', opacity: 0.9 },
+    '33%': { translate: '-3% 2%', scale: '1.12', opacity: 1 },
+    '66%': { translate: '4% -2%', scale: '1.06', opacity: 0.85 },
+    '100%': { translate: '0% 0%', scale: '1', opacity: 0.9 },
   },
 }
 
@@ -128,10 +130,41 @@ export const createOmzigOverlayOptions = ({ paletteMode }) => {
                   ].join(', '),
               filter: 'blur(24px)',
               animation: 'omzigAmbientDrift 26s ease-in-out infinite',
-              willChange: 'transform, opacity',
+              // Drift toward the pointer — driven by OmzigInteractionLayer.
+              // Composes with the keyframe's translate/scale. Defaults to
+              // centered (0.5) so it is inert until the pointer layer runs.
+              transform:
+                'translate3d(calc((var(--omzig-mx, 0.5) - 0.5) * 64px), calc((var(--omzig-my, 0.5) - 0.5) * 64px), 0)',
+              willChange: 'transform, translate, scale, opacity',
             },
           },
-          // Keep app content above the ambient layer.
+          // Cursor spotlight injected by OmzigInteractionLayer — a soft brand
+          // glow that eases toward the pointer, behind content with the aurora.
+          '.omzig-cursor-glow': {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: 640,
+            height: 640,
+            borderRadius: '50%',
+            pointerEvents: 'none',
+            zIndex: 0,
+            opacity: 0,
+            transition: 'opacity 420ms ease',
+            willChange: 'transform, opacity',
+            filter: 'blur(14px)',
+            mixBlendMode: dark ? 'screen' : 'normal',
+            backgroundImage: dark
+              ? `radial-gradient(circle at center, ${alpha(omzigScale[400], 0.24)} 0%, ${alpha(
+                  '#16B8A6',
+                  0.16
+                )} 34%, transparent 70%)`
+              : `radial-gradient(circle at center, ${alpha(omzigScale[300], 0.3)} 0%, ${alpha(
+                  '#16B8A6',
+                  0.12
+                )} 40%, transparent 70%)`,
+          },
+          // Keep app content above the ambient + spotlight layers.
           '#__next, #root, [data-omzig-app]': {
             position: 'relative',
             zIndex: 1,
@@ -193,6 +226,27 @@ export const createOmzigOverlayOptions = ({ paletteMode }) => {
                   0.4
                 )}, 0 12px 32px -16px ${alpha('#000000', 0.55)}`
               : `0 1px 2px ${alpha('#0C2232', 0.05)}, 0 10px 28px -14px ${alpha('#0C2232', 0.14)}`,
+            // Cards react to hover: gentle lift, brighter brand hairline and a
+            // deeper glow. Disabled under reduced-motion by the global rule.
+            transition:
+              'transform 240ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 240ms ease, border-color 240ms ease',
+            '@media (hover: hover)': {
+              '&:hover': {
+                transform: 'translateY(-3px)',
+                borderColor: dark
+                  ? alpha(omzigScale[400], 0.34)
+                  : alpha(omzigScale[600], 0.24),
+                boxShadow: dark
+                  ? `inset 0 1px 0 ${alpha('#FFFFFF', 0.06)}, 0 2px 6px ${alpha(
+                      '#000000',
+                      0.45
+                    )}, 0 22px 48px -20px ${alpha(omzigScale[500], 0.5)}`
+                  : `0 2px 6px ${alpha('#0C2232', 0.08)}, 0 20px 44px -20px ${alpha(
+                      omzigScale[500],
+                      0.32
+                    )}`,
+              },
+            },
           },
         },
       },
