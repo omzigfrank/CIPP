@@ -150,7 +150,8 @@ const App = (props) => {
     setDateLocale(resolvedLocale)
   }, [])
 
-  const excludeQueryKeys = ['authmeswa', 'alertsDashboard']
+  // authmecipp not persisted, stale clientPrincipal:null flashes 401 on post-login reload
+  const excludeQueryKeys = ['authmeswa', 'authmecipp', 'alertsDashboard']
 
   // 👇 Persist TanStack Query cache to localStorage
   useEffect(() => {
@@ -164,7 +165,7 @@ const App = (props) => {
         persister: localStoragePersister,
         maxAge: 1000 * 60 * 60 * 24, // 24 hours
         staleTime: 1000 * 60 * 5, // optional: 5 minutes
-        buster: 'v1',
+        buster: 'v2',
         dehydrateOptions: {
           shouldDehydrateQuery: (query) => {
             const queryIsReadyForPersistence = query.state.status === 'success'
