@@ -1,10 +1,6 @@
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
 import {
-  omzigScale,
-  omzigSurfaces,
-  OMZIG_WORDMARK,
-  OMZIG_WORDMARK_SUFFIX,
   OMZIG_WORDMARK_FULL,
   OMZIG_TAGLINE,
   OMZIG_TAGLINE_COLOR,
@@ -12,75 +8,59 @@ import {
 } from "./palette";
 
 /**
- * omzig.ai wordmark — brand sheet v1 (August 2026).
+ * omzig.ai wordmark — the supplied artwork from the brand asset pack.
  *
- * Always lowercase, always Space Grotesk Bold, always with the ".ai" in
- * Electric. Rendered as live text rather than the supplied PNG so it stays
- * crisp at every size, recolors with the theme, and reads correctly to screen
- * readers. The brand sheet's don't-list is enforced here: no gradient, no
- * outline, no drop shadow, and no recolor of the mark beyond Ink / White /
- * Electric.
+ * Two variants ship because the mark is drawn in a single flat colour: the
+ * "for-dark" file is 94% #FFFFFF ink on a transparent ground, the "for-light"
+ * file is 94% #0E1420. Using only one would make the logo invisible in the other
+ * theme, so the src follows theme.palette.mode. Both carry the Electric ".ai".
  *
- * Do not reintroduce the previous all-caps mark, nor a macron over the O
- * (U+014C). Both were withdrawn for trademark reasons.
+ * Sized by WIDTH, not height. The brand sheet sets a minimum wordmark width of
+ * 100px on screen, and the source canvas is 1332x448 with the ink inset — so a
+ * height that looks right in a 24px nav slot would render the mark at ~71px wide,
+ * under the minimum. 112px wide puts the ink at 104px and the image box at 38px
+ * tall. Below 100px the sheet says use the circle icon instead
+ * (public/omzig-ai-icon-circle.png), not a smaller wordmark.
  *
- * Clear space per the sheet is the height of the "o" on all sides; at the
- * wordmark's cap height that is ~0.52em, applied as padding by the caller's
- * layout. Below 100px wide, callers should use the circle icon instead
- * (public/omzig-icon.png).
+ * A plain <img> rather than next/image: this app is a static export, where
+ * next/image needs an explicit loader or unoptimized, and the wordmark is a fixed
+ * 37KB asset with nothing to optimise.
  *
- * KNOWN AA/AAA CONFLICT — the tagline only.
- * The sheet fixes the tagline at Slate #8FA3BD on dark and #5A6B82 on light,
- * and says never to restyle it. Measured, those land:
- *     #8FA3BD  7.14:1 on base Ink (AAA) · 6.35:1 on ink-2 · 5.60:1 on ink-3
- *     #5A6B82  5.44:1 on white · 5.07:1 on paper-2 · 4.85:1 on paper-3
- * So the tagline is AA, not the AAA the build spec (§9) asks for everywhere
- * else. Rather than recolor a brand asset, `withTagline` is restricted to the
- * base canvas: pass it only where the lockup sits on Ink or White (the auth
- * and loading heroes), never on a raised card. Everything else in this file is
- * AAA. Resolving the light-mode ceiling needs a marketing decision, not a
- * code change.
+ * Do not recolour, outline, or add a shadow to the artwork, and do not reinstate
+ * the retired all-caps mark or a macron over the O — both were withdrawn for
+ * trademark reasons.
  */
-export const OmzigLogo = ({ withTagline = false, size = 28 }) => {
+export const OmzigLogo = ({ withTagline = false, width = 112 }) => {
   const theme = useTheme();
   const dark = theme.palette.mode === "dark";
-
-  // "omzig" carries the layout: White on dark, Ink on light. The ".ai" is the
-  // accent. On dark it steps to 400 (#5FC0FF, AAA on every panel) because exact
-  // Electric only holds 6.11:1 on raised surfaces; on light it uses 800.
-  const wordColor = dark ? omzigSurfaces.textHiDark : omzigSurfaces.ink;
-  const suffixColor = dark ? omzigScale[400] : omzigScale[800];
+  const src = dark
+    ? "/omzig-ai-wordmark-for-dark.png"
+    : "/omzig-ai-wordmark-for-light.png";
 
   return (
-    <span
-      style={{ display: "inline-flex", flexDirection: "column", lineHeight: 1 }}
-      role="img"
-      aria-label={OMZIG_WORDMARK_FULL}
-    >
-      <span
-        aria-hidden="true"
-        style={{
-          fontFamily: OMZIG_FONT_DISPLAY,
-          fontWeight: 700,
-          fontSize: size,
-          letterSpacing: "-0.02em",
-          color: wordColor,
-          whiteSpace: "nowrap",
-        }}
-      >
-        {OMZIG_WORDMARK}
-        <span style={{ color: suffixColor }}>{OMZIG_WORDMARK_SUFFIX}</span>
-      </span>
+    <span style={{ display: "inline-flex", flexDirection: "column", lineHeight: 1 }}>
+      <img
+        src={src}
+        alt={OMZIG_WORDMARK_FULL}
+        width={width}
+        // height omitted deliberately: the intrinsic 1332x448 ratio sets it, so
+        // the mark can never be stretched if the asset is ever re-cut.
+        style={{ display: "block", width, height: "auto" }}
+      />
       {withTagline && (
+        // Tagline stays live text: the only supplied lockup with a tagline is the
+        // dark variant, and text keeps it legible in both themes. Space Grotesk
+        // Medium in Slate on dark / #5A6B82 on light, per the sheet. Note these
+        // are the sheet's colours and they measure AA, not AAA — so only use
+        // withTagline on the base Ink or White canvas, never on a raised card.
         <span
-          aria-hidden="true"
           style={{
             fontFamily: OMZIG_FONT_DISPLAY,
             fontWeight: 500,
-            fontSize: Math.max(11, Math.round(size * 0.32)),
+            fontSize: Math.max(11, Math.round(width * 0.115)),
             letterSpacing: "0.01em",
             color: dark ? OMZIG_TAGLINE_COLOR.dark : OMZIG_TAGLINE_COLOR.light,
-            marginTop: 3,
+            marginTop: 4,
             whiteSpace: "nowrap",
           }}
         >
@@ -93,5 +73,6 @@ export const OmzigLogo = ({ withTagline = false, size = 28 }) => {
 
 OmzigLogo.propTypes = {
   withTagline: PropTypes.bool,
-  size: PropTypes.number,
+  /** Rendered width in px. Keep at or above 100 — the brand sheet's minimum. */
+  width: PropTypes.number,
 };

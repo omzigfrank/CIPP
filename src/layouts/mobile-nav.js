@@ -126,10 +126,11 @@ export const MobileNav = (props) => {
             component={NextLink}
             href={paths.index}
             sx={{
-              // omzig.ai overlay: live-text wordmark — natural width, no anchor underline.
+              // omzig.ai overlay: supplied wordmark artwork at 112px wide = 38px
+              // tall, so the box is 40. No anchor underline.
               display: "inline-flex",
               alignItems: "center",
-              height: 24,
+              height: 40,
               width: "auto",
               textDecoration: "none",
             }}

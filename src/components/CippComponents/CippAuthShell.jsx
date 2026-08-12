@@ -28,7 +28,7 @@ const CippBrandLockup = () => (
   <Box
     component="img"
     src="/logo.png"
-    alt="CIPP"
+    alt="omzig.ai"
     sx={{ display: 'block', width: 'auto', height: { xs: 46, md: 96 } }}
   />
 )

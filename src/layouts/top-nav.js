@@ -299,13 +299,14 @@ export const TopNav = (props) => {
             component={NextLink}
             href={paths.index}
             sx={{
-              // omzig.ai overlay: the wordmark is live text, so let it take its
-              // natural width instead of the upstream 24px icon box (which it
-              // overflowed, covering the mobile menu button) and strip the
-              // default anchor underline.
+              // omzig.ai overlay: the wordmark is the supplied 1332x448 artwork,
+              // rendered 112px wide (the sheet's 100px minimum) which makes it
+              // 38px tall. The box is 40 rather than the upstream 24 so the mark
+              // cannot overflow and cover the mobile menu button, as it did once
+              // before. Anchor underline stripped.
               display: 'inline-flex',
               alignItems: 'center',
-              height: 24,
+              height: 40,
               width: 'auto',
               textDecoration: 'none',
             }}

@@ -52,7 +52,7 @@ const SetupGatePage = () => {
       <Container maxWidth="xl">
         <Stack spacing={3}>
           <Stack direction="row" spacing={2} alignItems="center">
-            <Box component="img" src="/logo.png" alt="CIPP" sx={{ display: 'block', height: 40 }} />
+            <Box component="img" src="/logo.png" alt="omzig.ai" sx={{ display: 'block', height: 40 }} />
             <Typography variant="h4">Welcome to CIPP</Typography>
           </Stack>
           <Alert severity="info">
