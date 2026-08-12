@@ -1,4 +1,4 @@
-// ŌMZIG Portal — subscription-scoped entry point.
+// omzig.ai Portal — subscription-scoped entry point.
 // Omzig Custom CIPP Build v1.1 §11. Creates the environment resource group,
 // the $400/mo budget alert (§17 item 9) and all portal resources.
 //

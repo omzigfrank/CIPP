@@ -173,7 +173,7 @@ const Page = () => {
   const stableTag = channels?.Frontend?.Stable?.Version;
   const stableUpdateAvailable = isNewerVersion(stableTag, portalVersion);
 
-  // ŌMZIG audit #1: only stable may install directly; beta/canary always
+  // omzig.ai audit #1: only stable may install directly; beta/canary always
   // open a review PR (the server/workflow enforce this regardless of the UI).
   const effectivePrMode = (channelKey) => installAsPr || channelKey !== "stable";
 
@@ -238,7 +238,7 @@ const Page = () => {
         <Container maxWidth="lg">
           <Stack spacing={3}>
             <OmzigPageHero
-              title="ŌMZIG Update Center"
+              title="omzig.ai Update Center"
               subtitle="Install updates straight from CIPP's official GitHub — on a schedule or on demand — and opt into the beta and canary channels when you want tomorrow's build today."
               actions={
                 <Button
@@ -358,7 +358,7 @@ const Page = () => {
                       <TextField
                         fullWidth
                         size="small"
-                        placeholder="ŌMZIG Updaters"
+                        placeholder="omzig.ai Updaters"
                         value={groupName}
                         onChange={(e) => setGroupName(e.target.value)}
                       />

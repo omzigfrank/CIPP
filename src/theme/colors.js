@@ -81,5 +81,5 @@ export const error = withAlphas({
   contrastText: "#FFFFFF",
 });
 
-// ŌMZIG overlay: brand color preset (see src/omzig/README.md).
+// omzig.ai overlay: brand color preset (see src/omzig/README.md).
 export const omzig = withAlphas({ ...omzigMuiPreset });

@@ -1,5 +1,5 @@
 /**
- * ŌMZIG animated number — counts up to `value` once, formatting each frame
+ * omzig.ai animated number — counts up to `value` once, formatting each frame
  * with `format`. Snaps to the final value under reduced motion, so the DOM
  * always settles on the true figure.
  */

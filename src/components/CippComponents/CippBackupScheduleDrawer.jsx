@@ -252,7 +252,7 @@ export const CippBackupScheduleDrawer = ({
             </Grid>
 
             <Grid size={{ xs: 12 }}>
-              <Typography variant="h6">ŌMZIG</Typography>
+              <Typography variant="h6">omzig.ai</Typography>
             </Grid>
             <Grid size={{ md: 6, xs: 12 }}>
               <CippFormComponent

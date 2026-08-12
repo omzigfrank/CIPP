@@ -1,5 +1,5 @@
 /**
- * ŌMZIG overlay entry point.
+ * omzig.ai overlay entry point.
  *
  * Everything Omzig-specific in the frontend lives under src/omzig/*.
  * Upstream files are only patched where upstream lacks an extension point

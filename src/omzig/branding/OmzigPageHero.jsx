@@ -1,5 +1,5 @@
 /**
- * ŌMZIG page hero — the signature banner for ŌMZIG-native pages (§8.1).
+ * omzig.ai page hero — the signature banner for omzig.ai-native pages (§8.1).
  *
  * A liquid-glass panel over an animated aurora: two drifting brand-blue /
  * teal glow orbs, a conic sheen sweeping the top hairline, the wordmark
@@ -30,11 +30,11 @@ export const OmzigPageHero = (props) => {
           px: { xs: 2.5, md: 4 },
           py: { xs: 2.5, md: 4 },
           border: `1px solid ${alpha(omzigScale[400], dark ? 0.2 : 0.28)}`,
-          backgroundColor: dark ? '#0B1322' : omzigScale[950],
+          backgroundColor: dark ? '#0E1420' : omzigScale[950],
           backgroundImage: [
             `radial-gradient(620px 260px at 8% -30%, ${alpha(omzigScale[500], 0.38)}, transparent 65%)`,
-            `radial-gradient(520px 240px at 92% 130%, ${alpha('#14B8A6', 0.22)}, transparent 62%)`,
-            `linear-gradient(120deg, #0B1322 0%, ${omzigScale[900]} 55%, #0C1B2B 100%)`,
+            `radial-gradient(520px 240px at 92% 130%, ${alpha('#7FD0FF', 0.22)}, transparent 62%)`,
+            `linear-gradient(120deg, #0E1420 0%, ${omzigScale[900]} 55%, #16202F 100%)`,
           ].join(', '),
           boxShadow: `inset 0 1px 0 ${alpha('#FFFFFF', 0.07)}, 0 18px 44px -20px ${alpha(
             omzigScale[500],
@@ -52,7 +52,7 @@ export const OmzigPageHero = (props) => {
             backgroundImage: `linear-gradient(90deg, transparent, ${alpha(
               omzigScale[300],
               0.9
-            )}, ${alpha('#7DE3D3', 0.9)}, transparent)`,
+            )}, ${alpha('#7FD0FF', 0.9)}, transparent)`,
             backgroundSize: '50% 100%',
             backgroundRepeat: 'no-repeat',
             animation: 'omzigSheen 7s linear infinite',
@@ -98,7 +98,7 @@ export const OmzigPageHero = (props) => {
                 width: 26,
                 height: 2,
                 borderRadius: 1,
-                background: `linear-gradient(90deg, ${omzigScale[400]}, #7DE3D3)`,
+                background: `linear-gradient(90deg, ${omzigScale[400]}, #7FD0FF)`,
                 display: 'inline-block',
               },
             }}
@@ -112,7 +112,7 @@ export const OmzigPageHero = (props) => {
             sx={{
               mt: 0.5,
               // Animated gradient shimmer sweeping the display title.
-              backgroundImage: `linear-gradient(100deg, #FFFFFF 0%, ${omzigScale[200]} 40%, #9AEDDD 55%, ${omzigScale[200]} 70%, #FFFFFF 100%)`,
+              backgroundImage: `linear-gradient(100deg, #FFFFFF 0%, ${omzigScale[200]} 40%, #A9DEFF 55%, ${omzigScale[200]} 70%, #FFFFFF 100%)`,
               backgroundSize: '250% 100%',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',

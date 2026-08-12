@@ -239,7 +239,7 @@ export const CippAutopilotProfileDrawer = ({
               name="HideChangeAccount"
               formControl={formControl}
               disabled={true}
-              helperText="This setting requires Hybrid Microsoft Entra Join which is not supported in ŌMZIG"
+              helperText="This setting requires Hybrid Microsoft Entra Join which is not supported in omzig.ai"
             />
             <CippFormComponent
               type="switch"

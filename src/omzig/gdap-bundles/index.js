@@ -1,5 +1,5 @@
 /**
- * ŌMZIG GDAP vertical role bundles — Omzig Custom CIPP Build v1.1 §6.1 / §17 item 10.
+ * omzig.ai GDAP vertical role bundles — Omzig Custom CIPP Build v1.1 §6.1 / §17 item 10.
  *
  * Each bundle is a static JSON file shaped for /api/ExecGDAPRoleTemplate?Action=Add:
  *   { $comment, TemplateId, Vertical, Description, RoleMappings: [{ GroupName, RoleName, roleDefinitionId }] }

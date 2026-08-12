@@ -1,5 +1,5 @@
 /**
- * ŌMZIG scroll-reveal — fades + lifts its children into place the first time
+ * omzig.ai scroll-reveal — fades + lifts its children into place the first time
  * they enter the viewport, with an optional stagger `delay`. Content starts
  * visible under reduced motion or without IntersectionObserver, and a safety
  * timeout guarantees it can never stay hidden.

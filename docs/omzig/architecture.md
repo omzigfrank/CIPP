@@ -1,4 +1,4 @@
-# ŌMZIG Portal — Architecture Overview
+# omzig.ai Portal — Architecture Overview
 
 Omzig-branded fork of CyberDrain's CIPP, per the Omzig Custom CIPP Build spec
 v1.1 (2026-07-09, confirmed by Frank Diaz). This document orients a new
@@ -11,7 +11,7 @@ contributor; the spec remains the source of truth.
 | `omzigfrank/CIPP` | `KelvinTegelaar/CIPP` (main) | `src/omzig/*` | `src/theme/colors.js`, `src/theme/utils.js`, `src/pages/_app.js` |
 | `omzigfrank/CIPP-API` | `KelvinTegelaar/CIPP-API` (master) | `Modules/Omzig/*` | `profile.ps1` |
 
-Every patched upstream line carries an `ŌMZIG overlay` marker comment. The
+Every patched upstream line carries an `omzig.ai overlay` marker comment. The
 `omzig-upstream-sync` workflow opens a weekly sync PR in each repo; the CIPP
 release train is a release gate — we do not fall off it.
 
@@ -45,8 +45,9 @@ deployed by `deployment/omzig` (Bicep, what-if gated):
 
 ## Brand (§5)
 
-Wordmark **ŌMZIG** (U+014C — never without the macron), tagline
-`We are best practice.`, dominant blue `#3088C8` with the 11-step AAA-safe
+Wordmark **omzig.ai** (lowercase, Electric `.ai`; the retired all-caps mark and
+the macron U+014C must not return), tagline
+`best practice, powered by AI`, Electric `#35B1FF` with the 11-step AAA-safe
 scale in `src/omzig/branding/tokens.css`. WCAG 2.2 AAA is the target for both
 portals; reduced-motion / reduced-transparency / high-contrast fallbacks are
 mandatory and already live in the token sheet.

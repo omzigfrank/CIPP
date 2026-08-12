@@ -217,7 +217,7 @@ export const CippUserManagement = () => {
     <Box>
       <CippDataTable
         actions={actions}
-        title="ŌMZIG Users"
+        title="omzig.ai Users"
         cardButton={
           <Button
             variant="contained"

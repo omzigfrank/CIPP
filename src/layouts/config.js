@@ -1155,7 +1155,7 @@ export const nativeMenuItems = [
     ],
   },
   {
-    title: 'ŌMZIG',
+    title: 'omzig.ai',
     type: 'header',
     icon: (
       <SvgIcon>

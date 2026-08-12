@@ -1,5 +1,5 @@
 {
-  "$comment": "ŌMZIG GDAP vertical role bundle — Omzig Custom CIPP Build v1.1 §6.1/§17 item 10. Deployed via Add-CIPPGDAPRoleTemplate; missing security groups are auto-created and auto-mapped by the invite wizard.",
+  "$comment": "omzig.ai GDAP vertical role bundle — Omzig Custom CIPP Build v1.1 §6.1/§17 item 10. Deployed via Add-CIPPGDAPRoleTemplate; missing security groups are auto-created and auto-mapped by the invite wizard.",
   "TemplateId": "Omzig-Legal-Ethics",
   "Vertical": "legal",
   "Description": "Law firms with attorney-client privilege obligations. Adds Purview compliance and eDiscovery-capable roles for ethics-wall and retention work.",

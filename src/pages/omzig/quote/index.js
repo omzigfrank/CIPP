@@ -173,7 +173,7 @@ const Page = () => {
         <Container maxWidth="lg">
           <Stack spacing={3}>
             <OmzigPageHero
-              title="ŌMZIG Quote Engine"
+              title="omzig.ai Quote Engine"
               subtitle="Evaluate an AI product quote against the §3 pricing floors and the 70% gross margin floor. Floors are hard — a below-floor quote is refused unless it carries a Frank-signed executive override."
             >
               {/* Live floor strip — click a product to load it into the quote. */}
@@ -195,7 +195,7 @@ const Page = () => {
                           border: `1px solid ${
                             selected ? alpha(omzigScale[300], 0.75) : alpha(omzigScale[300], 0.22)
                           }`,
-                          backgroundColor: alpha("#0B1322", selected ? 0.7 : 0.45),
+                          backgroundColor: alpha("#0E1420", selected ? 0.7 : 0.45),
                           backdropFilter: "blur(12px)",
                           transition: "border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease",
                           boxShadow: selected
@@ -241,7 +241,7 @@ const Page = () => {
             </OmzigPageHero>
 
             {floors.isError && (
-              <Alert severity="error">Unable to load the ŌMZIG pricing floors.</Alert>
+              <Alert severity="error">Unable to load the omzig.ai pricing floors.</Alert>
             )}
 
             {floors.isLoading ? (

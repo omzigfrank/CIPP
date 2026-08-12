@@ -7,12 +7,12 @@ import { CardContent, Stack, Alert } from "@mui/material";
 
 const Page = () => {
   return (
-    <CippPageCard hideBackButton={true} title={"ŌMZIG Roles"}>
+    <CippPageCard hideBackButton={true} title={"omzig.ai Roles"}>
       <CardContent>
         <Stack spacing={2}>
           <Alert severity="info">
             Custom roles can be used to restrict permissions for users with the 'editor' or
-            'readonly' roles in ŌMZIG. They can be limited to a subset of tenants and API
+            'readonly' roles in omzig.ai. They can be limited to a subset of tenants and API
             permissions. Built-in and custom roles can be assigned to Entra security groups for
             granular access control.
           </Alert>

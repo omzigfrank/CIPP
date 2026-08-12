@@ -1,5 +1,5 @@
 {
-  "$comment": "ŌMZIG GDAP vertical role bundle — Omzig Custom CIPP Build v1.1 §6.1/§17 item 10. Deployed via Add-CIPPGDAPRoleTemplate; missing security groups are auto-created and auto-mapped by the invite wizard.",
+  "$comment": "omzig.ai GDAP vertical role bundle — Omzig Custom CIPP Build v1.1 §6.1/§17 item 10. Deployed via Add-CIPPGDAPRoleTemplate; missing security groups are auto-created and auto-mapped by the invite wizard.",
   "TemplateId": "Omzig-Healthcare-HIPAA",
   "Vertical": "healthcare",
   "Description": "Healthcare tenants under HIPAA. Adds Purview compliance roles for BAA-scoped retention, DLP and PHI labeling on top of the Omzig baseline.",

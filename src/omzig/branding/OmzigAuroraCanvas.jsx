@@ -1,5 +1,5 @@
 /**
- * ŌMZIG living aurora — a raw WebGL fragment shader (no Three.js, zero deps)
+ * omzig.ai living aurora — a raw WebGL fragment shader (no Three.js, zero deps)
  * that paints a slow, flowing brand-blue/teal aurora and parallaxes gently
  * toward the pointer. It sits behind hero content (pointerEvents: none).
  *
@@ -19,7 +19,7 @@ attribute vec2 p;
 void main(){ gl_Position = vec4(p, 0.0, 1.0); }
 `
 
-// fbm value-noise aurora. Colours are the ŌMZIG brand ramp.
+// fbm value-noise aurora. Colours are the omzig.ai brand ramp.
 const FRAG = `
 precision highp float;
 uniform vec2 u_res;

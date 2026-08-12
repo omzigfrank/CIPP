@@ -248,7 +248,7 @@ export const TopNav = (props) => {
     <Box
       component="header"
       sx={{
-        // ŌMZIG overlay: liquid-glass header with a brand gradient hairline.
+        // omzig.ai overlay: liquid-glass header with a brand gradient hairline.
         backgroundColor: 'rgba(10, 16, 27, 0.82)',
         backdropFilter: 'blur(20px) saturate(1.4)',
         WebkitBackdropFilter: 'blur(20px) saturate(1.4)',
@@ -266,7 +266,7 @@ export const TopNav = (props) => {
           bottom: 0,
           height: '1px',
           background:
-            'linear-gradient(90deg, transparent, rgba(89, 159, 211, 0.55) 18%, rgba(125, 227, 211, 0.45) 82%, transparent)',
+            'linear-gradient(90deg, transparent, rgba(95, 192, 255, 0.55) 18%, rgba(127, 208, 255, 0.45) 82%, transparent)',
           pointerEvents: 'none',
         },
       }}
@@ -277,7 +277,7 @@ export const TopNav = (props) => {
         alignItems="center"
         sx={{
           minHeight: TOP_NAV_HEIGHT,
-          // ŌMZIG overlay: tighter gutters on phones.
+          // omzig.ai overlay: tighter gutters on phones.
           px: { xs: 1.5, sm: 3 },
         }}
       >
@@ -299,7 +299,7 @@ export const TopNav = (props) => {
             component={NextLink}
             href={paths.index}
             sx={{
-              // ŌMZIG overlay: the wordmark is live text, so let it take its
+              // omzig.ai overlay: the wordmark is live text, so let it take its
               // natural width instead of the upstream 24px icon box (which it
               // overflowed, covering the mobile menu button) and strip the
               // default anchor underline.

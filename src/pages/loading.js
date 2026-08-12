@@ -15,11 +15,11 @@ const Page = () => {
       <Head>
         <title>Loading</title>
       </Head>
-      {/* ŌMZIG overlay: upstream's CippAuthShell, Omzig wording. */}
+      {/* omzig.ai overlay: upstream's CippAuthShell, Omzig wording. */}
       <CippAuthShell
         busy
         version={version?.data?.version}
-        title="Logging into the ŌMZIG Portal"
+        title="Logging into the omzig.ai Portal"
         description="Please wait while we log you in..."
       />
     </>

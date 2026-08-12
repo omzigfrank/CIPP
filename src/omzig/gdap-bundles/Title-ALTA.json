@@ -1,5 +1,5 @@
 {
-  "$comment": "ŌMZIG GDAP vertical role bundle — Omzig Custom CIPP Build v1.1 §6.1/§17 item 10. Deployed via Add-CIPPGDAPRoleTemplate; missing security groups are auto-created and auto-mapped by the invite wizard.",
+  "$comment": "omzig.ai GDAP vertical role bundle — Omzig Custom CIPP Build v1.1 §6.1/§17 item 10. Deployed via Add-CIPPGDAPRoleTemplate; missing security groups are auto-created and auto-mapped by the invite wizard.",
   "TemplateId": "Omzig-Title-ALTA",
   "Vertical": "title",
   "Description": "Title agencies under ALTA Best Practices Pillar 3. Emphasizes wire-fraud controls: Conditional Access management plus security review access.",

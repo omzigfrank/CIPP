@@ -1,6 +1,6 @@
 name: Azure Static Web Apps CI/CD
 
-# ŌMZIG note: PR preview environments are intentionally NOT built. SWA staging
+# omzig.ai note: PR preview environments are intentionally NOT built. SWA staging
 # environments cannot use the linked Function App backend, so a CIPP preview
 # can never authenticate or load data — it only renders a dead "Access Denied"
 # page and posts a misleading preview URL on the PR. Test changes on the dev
@@ -9,7 +9,7 @@ on:
   push:
     branches:
       - main
-  # ŌMZIG: dispatched by omzig-update-install.yml after it pushes an update
+  # omzig.ai: dispatched by omzig-update-install.yml after it pushes an update
   # (GITHUB_TOKEN pushes never retrigger push-based workflows on their own).
   workflow_dispatch:
 

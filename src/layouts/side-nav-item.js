@@ -174,11 +174,11 @@ export const SideNavItem = (props) => {
             py: navItemPy,
             position: "relative",
             transition: "background-color 160ms ease",
-            // ŌMZIG overlay: active items get a gradient pill + glowing accent bar.
+            // omzig.ai overlay: active items get a gradient pill + glowing accent bar.
             ...(active && {
               backgroundImage:
-                "linear-gradient(90deg, rgba(48, 136, 200, 0.18), rgba(48, 136, 200, 0.04))",
-              boxShadow: "inset 0 0 0 1px rgba(89, 159, 211, 0.18)",
+                "linear-gradient(90deg, rgba(53, 177, 255, 0.18), rgba(53, 177, 255, 0.04))",
+              boxShadow: "inset 0 0 0 1px rgba(95, 192, 255, 0.18)",
               "&::before": {
                 content: '""',
                 position: "absolute",
@@ -187,8 +187,8 @@ export const SideNavItem = (props) => {
                 bottom: "20%",
                 width: 3,
                 borderRadius: 99,
-                background: "linear-gradient(180deg, #599FD3, #7DE3D3)",
-                boxShadow: "0 0 10px rgba(48, 136, 200, 0.75)",
+                background: "linear-gradient(180deg, #5FC0FF, #7FD0FF)",
+                boxShadow: "0 0 10px rgba(53, 177, 255, 0.75)",
               },
             }),
           }}
@@ -224,7 +224,7 @@ export const SideNavItem = (props) => {
                 textOverflow: "ellipsis",
               }),
               ...(active && {
-                // ŌMZIG overlay: brighter active text on dark glass, deeper on light.
+                // omzig.ai overlay: brighter active text on dark glass, deeper on light.
                 color: (theme) =>
                   theme.palette.mode === "dark"
                     ? theme.palette.primary.light

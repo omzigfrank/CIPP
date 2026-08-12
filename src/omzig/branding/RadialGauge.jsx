@@ -1,5 +1,5 @@
 /**
- * ŌMZIG radial gauge — a dependency-free SVG arc that fills to `value`
+ * omzig.ai radial gauge — a dependency-free SVG arc that fills to `value`
  * (0..1) with an animated sweep and a gradient stroke, showing the percentage
  * in the centre. Used for the quote engine's gross-margin readout.
  */
@@ -11,7 +11,7 @@ export const RadialGauge = ({
   value = 0,
   size = 132,
   thickness = 10,
-  accent = '#3088C8',
+  accent = '#35B1FF',
   track = 'rgba(148,163,184,0.22)',
   label,
   sublabel,

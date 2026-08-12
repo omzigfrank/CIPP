@@ -1,5 +1,5 @@
 /**
- * ŌMZIG progress ring — a compact animated circular progress indicator
+ * omzig.ai progress ring — a compact animated circular progress indicator
  * (e.g. "N of M bundles imported"). Gradient stroke, centre caption.
  */
 import PropTypes from 'prop-types'
@@ -10,7 +10,7 @@ export const ProgressRing = ({
   value = 0,
   size = 84,
   thickness = 8,
-  from = '#3088C8',
+  from = '#35B1FF',
   to = '#16B8A6',
   centerLabel,
   duration = 1100,

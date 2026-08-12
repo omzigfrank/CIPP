@@ -53,7 +53,7 @@ const VERTICAL_STYLES = {
   healthcare: { icon: <LocalHospitalOutlined />, from: "#14B8A6", to: "#0E7490" },
   legal: { icon: <GavelOutlined />, from: "#818CF8", to: "#4F46E5" },
   wealth: { icon: <TrendingUpOutlined />, from: "#F59E0B", to: "#B45309" },
-  title: { icon: <ApartmentOutlined />, from: "#599FD3", to: "#215F8C" },
+  title: { icon: <ApartmentOutlined />, from: "#5FC0FF", to: "#0F70CC" },
   hospitality: { icon: <HotelOutlined />, from: "#FB7185", to: "#BE123C" },
   "family-office": { icon: <FamilyRestroomOutlined />, from: "#A78BFA", to: "#6D28D9" },
 };
@@ -146,7 +146,7 @@ const Page = () => {
         <Container maxWidth="lg">
           <Stack spacing={3}>
             <OmzigPageHero
-              title="ŌMZIG GDAP Vertical Bundle Importer"
+              title="omzig.ai GDAP Vertical Bundle Importer"
               subtitle="Import the §6.1 / §17 item 10 vertical GDAP role bundles into the standard GDAP Role Templates library. Re-import is safe — Add merges missing roles by roleDefinitionId and never removes an existing role."
               actions={
                 <Tooltip

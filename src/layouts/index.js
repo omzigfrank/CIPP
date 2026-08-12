@@ -57,7 +57,7 @@ const useMobileNav = () => {
 }
 
 const LayoutRoot = styled('div')(({ theme }) => ({
-  // ŌMZIG overlay: transparent so the fixed aurora backdrop painted on the
+  // omzig.ai overlay: transparent so the fixed aurora backdrop painted on the
   // <body> (src/omzig/branding/theme.js) shows through behind all content.
   backgroundColor: 'transparent',
   display: 'flex',

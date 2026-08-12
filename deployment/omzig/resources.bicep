@@ -1,4 +1,4 @@
-// ŌMZIG Portal — resource-group-scoped resources.
+// omzig.ai Portal — resource-group-scoped resources.
 // Omzig Custom CIPP Build v1.1 §11.2/§11.3 + §16.5 (MCP container app).
 // Non-negotiables honored here: managed identity everywhere, Key Vault with
 // soft-delete + purge protection, Cosmos continuous backup, Storage GRS,

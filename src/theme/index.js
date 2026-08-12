@@ -2,7 +2,7 @@ import { createTheme as createMuiTheme, responsiveFontSizes } from "@mui/materia
 import { createOptions as createBaseOptions } from "./base/create-options";
 import { createOptions as createDarkOptions } from "./dark/create-options";
 import { createOptions as createLightOptions } from "./light/create-options";
-// ŌMZIG overlay: signature visual layer (aurora, glass, gradients).
+// omzig.ai overlay: signature visual layer (aurora, glass, gradients).
 import { createOmzigOverlayOptions } from "../omzig/branding/theme";
 
 export const createTheme = (config) => {
@@ -54,7 +54,7 @@ export const createTheme = (config) => {
         },
       },
     },
-    // ŌMZIG overlay: merged last so the brand layer wins (see src/omzig/branding/theme.js).
+    // omzig.ai overlay: merged last so the brand layer wins (see src/omzig/branding/theme.js).
     createOmzigOverlayOptions({ paletteMode: config.paletteMode })
   );
 

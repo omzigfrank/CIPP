@@ -1,4 +1,4 @@
-# ŌMZIG Portal — Azure Infrastructure
+# omzig.ai Portal — Azure Infrastructure
 
 Bicep for the three Omzig environments (Omzig Custom CIPP Build v1.1 §11):
 

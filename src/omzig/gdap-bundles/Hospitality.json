@@ -1,5 +1,5 @@
 {
-  "$comment": "ŌMZIG GDAP vertical role bundle — Omzig Custom CIPP Build v1.1 §6.1/§17 item 10. Deployed via Add-CIPPGDAPRoleTemplate; missing security groups are auto-created and auto-mapped by the invite wizard.",
+  "$comment": "omzig.ai GDAP vertical role bundle — Omzig Custom CIPP Build v1.1 §6.1/§17 item 10. Deployed via Add-CIPPGDAPRoleTemplate; missing security groups are auto-created and auto-mapped by the invite wizard.",
   "TemplateId": "Omzig-Hospitality",
   "Vertical": "hospitality",
   "Description": "Hospitality tenants. Leaner bundle: day-to-day identity, device, mail and collaboration administration without privileged-role escalation rights.",

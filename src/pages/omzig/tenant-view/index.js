@@ -107,14 +107,14 @@ const Page = () => {
   if (!tenantSelected) {
     return (
       <>
-        <CippHead title="ŌMZIG Tenant View" noTenant />
+        <CippHead title="omzig.ai Tenant View" noTenant />
         <Box sx={{ flexGrow: 1 }}>
           <Container maxWidth="lg">
             <Card>
               <CardContent>
                 <Typography variant="h6">Select a tenant</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Choose a tenant from the tenant selector above to view its ŌMZIG single-pane
+                  Choose a tenant from the tenant selector above to view its omzig.ai single-pane
                   summary.
                 </Typography>
               </CardContent>
@@ -134,17 +134,17 @@ const Page = () => {
 
   return (
     <>
-      <CippHead title="ŌMZIG Tenant View" />
+      <CippHead title="omzig.ai Tenant View" />
       <Box sx={{ flexGrow: 1 }}>
         <Container maxWidth="lg">
           <Stack spacing={2}>
-            {/* Header — ŌMZIG overlay hero */}
+            {/* Header — omzig.ai overlay hero */}
             {tenantView.isLoading ? (
               <Skeleton variant="rounded" height={120} />
             ) : (
               <OmzigPageHero
                 title={record?.displayName || record?.tenantId || currentTenant}
-                subtitle="Single-pane ŌMZIG summary — health, AI readiness, PSA and RMM at a glance."
+                subtitle="Single-pane omzig.ai summary — health, AI readiness, PSA and RMM at a glance."
                 actions={
                   <Stack direction="row" spacing={1} flexWrap="wrap">
                     <Chip
@@ -420,7 +420,7 @@ const Page = () => {
 
             {tenantView.isError && (
               <Alert severity="error">
-                Unable to load the ŌMZIG tenant view for this tenant.
+                Unable to load the omzig.ai tenant view for this tenant.
               </Alert>
             )}
           </Stack>

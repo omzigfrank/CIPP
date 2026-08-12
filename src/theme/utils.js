@@ -10,7 +10,7 @@ export const getPrimary = (preset) => {
       return indigo;
     case "purple":
       return purple;
-    // ŌMZIG overlay: brand preset (see src/omzig/README.md).
+    // omzig.ai overlay: brand preset (see src/omzig/README.md).
     case "omzig":
       return omzig;
     default:

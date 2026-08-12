@@ -1,5 +1,5 @@
 /**
- * ŌMZIG tilt card — a pointer-reactive 3D tilt + moving specular glare on
+ * omzig.ai tilt card — a pointer-reactive 3D tilt + moving specular glare on
  * hover, giving the channel / bundle cards physical depth. Disabled entirely
  * under reduced motion and on touch (no hover), where it renders a plain Box.
  */

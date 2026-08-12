@@ -24,7 +24,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkParse from 'remark-parse'
 import rehypeRaw from 'rehype-raw'
-// ŌMZIG security overlay (audit #4): sanitize GitHub-sourced release-note HTML.
+// omzig.ai security overlay (audit #4): sanitize GitHub-sourced release-note HTML.
 // rehypeRaw parses embedded raw HTML into the tree; without a sanitizer that
 // lets a crafted release body run script (e.g. <img onerror>) in the CIPP
 // origin. rehypeSanitize MUST run after rehypeRaw to strip dangerous tags,

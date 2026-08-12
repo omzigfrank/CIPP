@@ -13,7 +13,7 @@ import { createEmotionCache } from '../utils/create-emotion-cache'
 import '../libs/nprogress'
 import 'driver.js/dist/driver.css'
 import '../styles/tutorial-overrides.css'
-// ŌMZIG overlay: brand tokens + WCAG fallbacks (see src/omzig/README.md).
+// omzig.ai overlay: brand tokens + WCAG fallbacks (see src/omzig/README.md).
 import '../omzig/branding/tokens.css'
 import { PrivateRoute } from '../components/PrivateRoute'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -272,7 +272,7 @@ const App = (props) => {
   return (
     <CacheProvider value={emotionCache}>
       <Head>
-        <title>ŌMZIG Portal</title>
+        <title>omzig.ai Portal</title>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <ReduxProvider store={store}>

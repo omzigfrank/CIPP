@@ -1,5 +1,5 @@
 /**
- * ŌMZIG motion primitives — the shared foundation for the signature
+ * omzig.ai motion primitives — the shared foundation for the signature
  * interaction layer. Everything here degrades to instant/static under
  * prefers-reduced-motion so the flourish is never a barrier.
  */

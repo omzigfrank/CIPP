@@ -93,16 +93,16 @@ export const MobileNav = (props) => {
         sx: {
           width: MOBILE_NAV_WIDTH,
           maxWidth: 360,
-          // ŌMZIG overlay: liquid-glass drawer to match the desktop rail;
+          // omzig.ai overlay: liquid-glass drawer to match the desktop rail;
           // tokens.css swaps it to a solid surface under
           // prefers-reduced-transparency.
           backgroundColor: (theme) =>
-            theme.palette.mode === "dark" ? "rgba(12, 18, 29, 0.9)" : "rgba(255, 255, 255, 0.92)",
+            theme.palette.mode === "dark" ? "rgba(14, 20, 32, 0.9)" : "rgba(255, 255, 255, 0.92)",
           backdropFilter: "blur(20px) saturate(1.4)",
           WebkitBackdropFilter: "blur(20px) saturate(1.4)",
           borderRight: (theme) =>
             `1px solid ${
-              theme.palette.mode === "dark" ? "rgba(89, 159, 211, 0.18)" : "rgba(26, 74, 110, 0.12)"
+              theme.palette.mode === "dark" ? "rgba(95, 192, 255, 0.18)" : "rgba(8, 78, 136, 0.12)"
             }`,
         },
       }}
@@ -126,7 +126,7 @@ export const MobileNav = (props) => {
             component={NextLink}
             href={paths.index}
             sx={{
-              // ŌMZIG overlay: live-text wordmark — natural width, no anchor underline.
+              // omzig.ai overlay: live-text wordmark — natural width, no anchor underline.
               display: "inline-flex",
               alignItems: "center",
               height: 24,
