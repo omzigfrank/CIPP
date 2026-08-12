@@ -11,9 +11,16 @@ import {
  * omzig.ai wordmark — the supplied artwork from the brand asset pack.
  *
  * Two variants ship because the mark is drawn in a single flat colour: the
- * "for-dark" file is 94% #FFFFFF ink on a transparent ground, the "for-light"
- * file is 94% #0E1420. Using only one would make the logo invisible in the other
- * theme, so the src follows theme.palette.mode. Both carry the Electric ".ai".
+ * "for-dark" file is 94% #FFFFFF ink on a transparent ground, the "for-light" file
+ * is 94% #0E1420. Both carry the Electric ".ai".
+ *
+ * `ground` picks the variant, and it describes THE SURFACE THE MARK SITS ON — not
+ * the theme. Those are not the same thing, and conflating them is a real bug this
+ * component already shipped once: top-nav.js hardcodes
+ * backgroundColor: rgba(10,16,27,0.82) with no theme dependency, so it is dark in
+ * both modes. Following palette.mode there served the #0E1420 variant onto a
+ * near-black bar at 1.03:1 — invisible. Callers on a fixed-colour surface must say
+ * so; only pass 'auto' when the surface itself flips with the theme.
  *
  * Sized by WIDTH, not height. The brand sheet sets a minimum wordmark width of
  * 100px on screen, and the source canvas is 1332x448 with the ink inset — so a
@@ -30,10 +37,11 @@ import {
  * the retired all-caps mark or a macron over the O — both were withdrawn for
  * trademark reasons.
  */
-export const OmzigLogo = ({ withTagline = false, width = 112 }) => {
+export const OmzigLogo = ({ withTagline = false, width = 112, ground = "auto" }) => {
   const theme = useTheme();
-  const dark = theme.palette.mode === "dark";
-  const src = dark
+  // 'auto' means the surface flips with the theme, so the mark should too.
+  const onDarkGround = ground === "auto" ? theme.palette.mode === "dark" : ground === "dark";
+  const src = onDarkGround
     ? "/omzig-ai-wordmark-for-dark.png"
     : "/omzig-ai-wordmark-for-light.png";
 
@@ -59,7 +67,7 @@ export const OmzigLogo = ({ withTagline = false, width = 112 }) => {
             fontWeight: 500,
             fontSize: Math.max(11, Math.round(width * 0.115)),
             letterSpacing: "0.01em",
-            color: dark ? OMZIG_TAGLINE_COLOR.dark : OMZIG_TAGLINE_COLOR.light,
+            color: onDarkGround ? OMZIG_TAGLINE_COLOR.dark : OMZIG_TAGLINE_COLOR.light,
             marginTop: 4,
             whiteSpace: "nowrap",
           }}
@@ -75,4 +83,6 @@ OmzigLogo.propTypes = {
   withTagline: PropTypes.bool,
   /** Rendered width in px. Keep at or above 100 — the brand sheet's minimum. */
   width: PropTypes.number,
+  /** The surface the mark sits on. 'auto' only when that surface flips with the theme. */
+  ground: PropTypes.oneOf(["auto", "dark", "light"]),
 };

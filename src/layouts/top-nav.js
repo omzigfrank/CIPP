@@ -311,7 +311,10 @@ export const TopNav = (props) => {
               textDecoration: 'none',
             }}
           >
-            <Logo />
+            {/* This bar is backgroundColor rgba(10,16,27,0.82) in BOTH themes, so the
+                mark must always be the white variant. Letting it follow the theme
+                served the #0E1420 variant here in light mode at 1.03:1. */}
+            <Logo ground="dark" />
           </Box>
           {!mdDown && (
             <Box data-tutorial="tenant-selector">
