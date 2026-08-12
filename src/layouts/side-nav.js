@@ -7,9 +7,12 @@ import { SideNavBookmarks } from './side-nav-bookmarks'
 import { ApiGetCall } from '../api/ApiCall.jsx'
 import { useSettings } from '../hooks/use-settings'
 
-const SIDE_NAV_WIDTH = 290
-const SIDE_NAV_COLLAPSED_WIDTH = 73 // icon size + padding + border right
-const TOP_NAV_HEIGHT = 64
+import {
+  BANNER_HEIGHT_VAR,
+  SIDE_NAV_COLLAPSED_WIDTH,
+  SIDE_NAV_WIDTH,
+  TOP_NAV_HEIGHT,
+} from './constants'
 
 const isPathPrefix = (pathname, itemPath) => {
   if (!pathname || !itemPath) return false
@@ -215,11 +218,13 @@ export const SideNav = (props) => {
                 `1px solid ${
                   theme.palette.mode === 'dark' ? 'rgba(89, 159, 211, 0.14)' : 'rgba(26, 74, 110, 0.1)'
                 }`,
-              height: `calc(100% - ${TOP_NAV_HEIGHT}px)`,
+              // Height must subtract the banner as well as the top nav (upstream 10.8.x),
+              // otherwise the rail overruns the viewport whenever a banner is shown.
+              height: `calc(100% - ${TOP_NAV_HEIGHT}px - ${BANNER_HEIGHT_VAR})`,
               overflowX: 'hidden',
               overflowY: 'auto',
               scrollbarGutter: 'stable',
-              top: TOP_NAV_HEIGHT,
+              top: `calc(${TOP_NAV_HEIGHT}px + ${BANNER_HEIGHT_VAR})`,
               transition: 'width 250ms ease-in-out',
               width: collapse ? SIDE_NAV_COLLAPSED_WIDTH : SIDE_NAV_WIDTH,
               zIndex: (theme) => theme.zIndex.appBar - 100,
