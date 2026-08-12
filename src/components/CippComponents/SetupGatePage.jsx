@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic'
 import { Alert, Box, Container, Stack, Typography } from '@mui/material'
 import { useQueryClient } from '@tanstack/react-query'
 import { ApiGetCall } from '../../api/ApiCall'
+import { Logo } from '../logo'
 
 const OnboardingWizardPage = dynamic(() => import('../CippWizard/OnboardingWizardPage.jsx'), {
   ssr: false,
@@ -52,18 +53,20 @@ const SetupGatePage = () => {
       <Container maxWidth="xl">
         <Stack spacing={3}>
           <Stack direction="row" spacing={2} alignItems="center">
-            <Box component="img" src="/logo.png" alt="omzig.ai" sx={{ display: 'block', height: 40 }} />
-            <Typography variant="h4">Welcome to CIPP</Typography>
+            {/* omzig.ai overlay: the shared Logo swaps wordmark variant on theme,
+                which this page needs because its ground is background.default. */}
+            <Logo />
+            <Typography variant="h4">Welcome to omzig.ai</Typography>
           </Stack>
           <Alert severity="info">
-            CIPP needs to be connected to your Microsoft tenants before it can be used. Complete
+            omzig.ai needs to be connected to your Microsoft tenants before it can be used. Complete
             this setup wizard to unlock the rest of the application.
           </Alert>
           <OnboardingWizardPage
             mode="setupGate"
             samAppPresent={me.data?.samAppPresent === true}
             completionButton={{
-              label: 'Enter CIPP',
+              label: 'Enter omzig.ai',
               onClick: () => {
                 purgePersistedCache()
                 // Refetching authmecipp makes PrivateRoute re-evaluate the gate; if a
