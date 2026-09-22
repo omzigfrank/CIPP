@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 import { Alert, Box, Container, Stack, Typography } from '@mui/material'
 import { useQueryClient } from '@tanstack/react-query'
 import { ApiGetCall } from '../../api/ApiCall'
@@ -24,6 +25,7 @@ const purgePersistedCache = () => {
 // CippAuthShell - its 520px card is far too narrow for the wizard's stepper forms.
 const SetupGatePage = () => {
   const queryClient = useQueryClient()
+  const router = useRouter()
   useEffect(() => {
     purgePersistedCache()
     // The persister already rehydrated pre-setup queries into memory at app start,
@@ -52,7 +54,9 @@ const SetupGatePage = () => {
     >
       <Container maxWidth="xl">
         <Stack spacing={3}>
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Stack direction="row" spacing={2} sx={{
+            alignItems: "center"
+          }}>
             {/* omzig.ai overlay: the shared Logo swaps wordmark variant on theme,
                 which this page needs because its ground is background.default. */}
             <Logo />
@@ -73,13 +77,16 @@ const SetupGatePage = () => {
                 // worker still reports setup incomplete this screen simply stays up,
                 // results intact, and the button doubles as the retry.
                 queryClient.invalidateQueries()
+                // The gate can be reached on the wizard's own route; land on the dashboard,
+                // not back on the setup wizard.
+                if (router.pathname !== '/') router.replace('/')
               },
             }}
           />
         </Stack>
       </Container>
     </Box>
-  )
+  );
 }
 
 export default SetupGatePage

@@ -18,7 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { useSettings } from "../../../hooks/use-settings";
 import { CippHead } from "../../../components/CippComponents/CippHead";

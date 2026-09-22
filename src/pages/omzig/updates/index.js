@@ -32,7 +32,7 @@ import {
   LockPersonOutlined,
   GroupsOutlined,
 } from "@mui/icons-material";
-import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { CippHead } from "../../../components/CippComponents/CippHead";
 import { CippApiResults } from "../../../components/CippComponents/CippApiResults";

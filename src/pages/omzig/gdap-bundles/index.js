@@ -31,7 +31,7 @@ import {
   FamilyRestroomOutlined,
   ShieldOutlined,
 } from "@mui/icons-material";
-import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index";
 import { ApiGetCallWithPagination, ApiPostCall } from "../../../api/ApiCall";
 import { CippHead } from "../../../components/CippComponents/CippHead";
 import { CippApiResults } from "../../../components/CippComponents/CippApiResults";

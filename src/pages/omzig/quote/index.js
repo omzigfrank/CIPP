@@ -23,7 +23,7 @@ import {
 import { alpha } from "@mui/material/styles";
 import { Grid } from "@mui/system";
 import { ExpandMore, LockOutlined, BoltOutlined } from "@mui/icons-material";
-import { Layout as DashboardLayout } from "../../../layouts/index.js";
+import { Layout as DashboardLayout } from "../../../layouts/index";
 import { ApiGetCall, ApiPostCall } from "../../../api/ApiCall";
 import { CippHead } from "../../../components/CippComponents/CippHead";
 import { CippApiResults } from "../../../components/CippComponents/CippApiResults";
