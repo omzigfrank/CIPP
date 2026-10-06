@@ -1020,6 +1020,7 @@ const Page = () => {
         return Array.isArray(row) ? result : result[0]
       },
       condition: (row) => row && !row.Enabled,
+      hideCondition: (row) => row?.Enabled,
       confirmText: 'Are you sure you want to enable this mailbox rule?',
       multiPost: false,
     },
@@ -1040,6 +1041,7 @@ const Page = () => {
         return Array.isArray(row) ? result : result[0]
       },
       condition: (row) => row && row.Enabled,
+      hideCondition: (row) => !row?.Enabled,
       confirmText: 'Are you sure you want to disable this mailbox rule?',
       multiPost: false,
     },
@@ -1121,6 +1123,7 @@ const Page = () => {
                       Enable: true,
                       tenantFilter: userSettingsDefaults.currentTenant,
                     },
+                    hideCondition: () => data?.Enabled,
                     confirmText: 'Are you sure you want to enable this mailbox rule?',
                     multiPost: false,
                   },
@@ -1136,6 +1139,7 @@ const Page = () => {
                       Disable: true,
                       tenantFilter: userSettingsDefaults.currentTenant,
                     },
+                    hideCondition: () => !data?.Enabled,
                     confirmText: 'Are you sure you want to disable this mailbox rule?',
                     multiPost: false,
                   },
@@ -1595,6 +1599,8 @@ const Page = () => {
   )
 }
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>
+Page.getLayout = (page) => (
+  <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>
+)
 
 export default Page

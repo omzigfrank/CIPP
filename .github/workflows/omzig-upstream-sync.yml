@@ -1,7 +1,9 @@
 # omzig.ai upstream sync (spec §11.4): weekly PR pulling KelvinTegelaar/CIPP
 # into the Omzig fork so we never fall off the CIPP release train.
-# Conflicts should only ever surface in the three marked overlay touchpoints
-# (src/theme/colors.js, src/theme/utils.js, src/pages/_app.js).
+# Conflicts surface wherever we have patched an upstream file, not only in the
+# three marked overlay touchpoints this comment used to name: the 11.0.2 sync
+# conflicted in three rebranded components. See omzig-ops/ in CIPP-API for the
+# resolution policy.
 name: Omzig Upstream Sync
 
 on:
@@ -45,11 +47,12 @@ jobs:
 
       - name: Create sync branch and merge
         id: merge
+        env:
+          STRATEGY: ${{ github.event.inputs.strategy || 'merge' }}
         run: |
           SYNC_BRANCH="omzig/upstream-sync-$(date -u +%Y-%m-%d)"
           echo "branch=${SYNC_BRANCH}" >> "$GITHUB_OUTPUT"
           git checkout -b "${SYNC_BRANCH}"
-          STRATEGY="${{ github.event.inputs.strategy || 'merge' }}"
           set +e
           if [ "$STRATEGY" = "rebase" ]; then
             git rebase "upstream/${UPSTREAM_BRANCH}"
@@ -69,15 +72,19 @@ jobs:
         if: steps.merge.outputs.conflicted == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SYNC_BRANCH: ${{ steps.merge.outputs.branch }}
         run: |
           if git diff --quiet "origin/${TARGET_BRANCH}"; then
             echo 'Already up to date with upstream — nothing to sync.'
             exit 0
           fi
-          git push -u origin "${{ steps.merge.outputs.branch }}"
-          gh pr create \
+          git push -u origin "${SYNC_BRANCH}"
+          # --repo on every gh write: with an 'upstream' remote, gh otherwise
+          # targets the fork parent. KelvinTegelaar/CIPP has issues ON, so the
+          # conflict alert was one label away from landing on CIPP's public tracker.
+          gh pr create --repo "${GITHUB_REPOSITORY}" \
             --base "${TARGET_BRANCH}" \
-            --head "${{ steps.merge.outputs.branch }}" \
+            --head "${SYNC_BRANCH}" \
             --title "chore: weekly upstream sync from ${UPSTREAM_REPO}" \
             --body "Automated weekly sync from \`${UPSTREAM_REPO}@${UPSTREAM_BRANCH}\` (spec §11.4). Review the overlay touchpoints (src/theme/colors.js, src/theme/utils.js, src/pages/_app.js) before merging. Merge requires Frank's approval per Governance Non-Negotiable #5."
 
@@ -86,7 +93,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh issue create \
+          gh issue create --repo "${GITHUB_REPOSITORY}" \
             --title "Upstream sync conflict — $(date -u +%Y-%m-%d)" \
             --label 'upstream-sync' \
             --body "The weekly sync from \`${UPSTREAM_REPO}@${UPSTREAM_BRANCH}\` hit merge conflicts and needs a manual resolve. Expected conflict surface: the marked omzig.ai overlay touchpoints. Run the sync locally, resolve, and open the PR by hand."

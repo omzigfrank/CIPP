@@ -91,7 +91,7 @@ const CHANNELS = [
     from: "#14B8A6",
     to: "#0E7490",
     description:
-      "The latest published CIPP release from the official GitHub. Recommended for production.",
+      "The version on CIPP's official release branch, the same source CIPP's own update check uses. Recommended for production.",
   },
   {
     key: "prerelease",
@@ -170,8 +170,13 @@ const Page = () => {
   // caller is an authorized updater.
   const canWrite = githubReady && isUpdater;
 
-  const stableTag = channels?.Frontend?.Stable?.Version;
-  const stableUpdateAvailable = isNewerVersion(stableTag, portalVersion);
+  // Either side behind upstream stable means an update is available. This used to
+  // check only the portal, so an API that fell behind still showed "Up to date".
+  const sideChecks = [
+    isNewerVersion(channels?.Frontend?.Stable?.Version, portalVersion),
+    isNewerVersion(channels?.Api?.Stable?.Version, apiVersion),
+  ].filter((result) => result !== null);
+  const stableUpdateAvailable = sideChecks.length ? sideChecks.some(Boolean) : null;
 
   // omzig.ai audit #1: only stable may install directly; beta/canary always
   // open a review PR (the server/workflow enforce this regardless of the UI).
@@ -227,7 +232,7 @@ const Page = () => {
     }
     const release = channelKey === "stable" ? data.Stable : data.Prerelease;
     return release
-      ? { label: release.Version, date: release.PublishedAt, url: release.Url }
+      ? { label: `v${`${release.Version}`.replace(/^v/i, "")}`, date: release.PublishedAt, url: release.Url }
       : null;
   };
 
